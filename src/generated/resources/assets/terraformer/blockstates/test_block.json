@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "terraformer:block/test_block"
+    }
+  }
+}
