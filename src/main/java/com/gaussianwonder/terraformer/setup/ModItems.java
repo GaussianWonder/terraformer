@@ -1,16 +1,11 @@
 package com.gaussianwonder.terraformer.setup;
 
-import com.gaussianwonder.terraformer.TerraformerMod;
-import com.gaussianwonder.terraformer.items.ItemBase;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraftforge.fml.RegistryObject;
+import com.gaussianwonder.terraformer.setup.items.BaseItem;
+import com.gaussianwonder.terraformer.setup.items.ModItem;
 
 //TODO Adapt to a proper BaseItem
 public class ModItems {
-    public static final RegistryObject<Item> TERRAFORM_ROD = RegistryHandler.ITEMS.register("terraform_rod", ItemBase::new);
+    public static final ModItem<BaseItem> TERRAFORM_ROD = new ModItem<>("terraform_rod", BaseItem::new);
 
-    static void register() {
-
-    }
+    static void register() { }
 }

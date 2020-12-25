@@ -20,9 +20,14 @@ public class DataGenerators {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
+        // Models and States
         gen.addProvider(new ModBlockStateProvider(gen, existingFileHelper));
         gen.addProvider(new ModItemModelProvider(gen, existingFileHelper));
 
+        // Loot Tables
+        
+
+        // Tags
         ModBlockTagsProvider modBlockTagsProvider = new ModBlockTagsProvider(gen, existingFileHelper);
         ModItemTagsProvider modItemTagsProvider = new ModItemTagsProvider(gen, modBlockTagsProvider, existingFileHelper);
         gen.addProvider(modBlockTagsProvider);
