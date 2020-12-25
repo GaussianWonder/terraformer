@@ -1,10 +1,10 @@
-package com.gaussianwonder.terraformer.data;
+package com.gaussianwonder.terraformer.setup.data;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
-import com.gaussianwonder.terraformer.data.client.ModBlockStateProvider;
-import com.gaussianwonder.terraformer.data.client.ModItemModelProvider;
-import com.gaussianwonder.terraformer.data.tags.ModBlockTagsProvider;
-import com.gaussianwonder.terraformer.data.tags.ModItemTagsProvider;
+import com.gaussianwonder.terraformer.setup.data.client.ModBlockStateProvider;
+import com.gaussianwonder.terraformer.setup.data.client.ModItemModelProvider;
+import com.gaussianwonder.terraformer.setup.data.tags.ModBlockTagsProvider;
+import com.gaussianwonder.terraformer.setup.data.tags.ModItemTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

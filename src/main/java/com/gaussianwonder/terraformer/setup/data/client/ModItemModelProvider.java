@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.data.client;
+package com.gaussianwonder.terraformer.setup.data.client;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import net.minecraft.data.DataGenerator;
@@ -6,8 +6,6 @@ import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
-
-import javax.annotation.Nonnull;
 
 public class ModItemModelProvider extends ItemModelProvider {
     public ModItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
