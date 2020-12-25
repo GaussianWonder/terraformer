@@ -1,8 +1,10 @@
 package com.gaussianwonder.terraformer.data;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
-import com.gaussianwonder.terraformer.data.client.TerraformerBlockStateProvider;
-import com.gaussianwonder.terraformer.data.client.TerraformerItemModelProvider;
+import com.gaussianwonder.terraformer.data.client.ModBlockStateProvider;
+import com.gaussianwonder.terraformer.data.client.ModItemModelProvider;
+import com.gaussianwonder.terraformer.data.tags.ModBlockTagsProvider;
+import com.gaussianwonder.terraformer.data.tags.ModItemTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,7 +20,12 @@ public class DataGenerators {
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        gen.addProvider(new TerraformerBlockStateProvider(gen, existingFileHelper));
-        gen.addProvider(new TerraformerItemModelProvider(gen, existingFileHelper));
+        gen.addProvider(new ModBlockStateProvider(gen, existingFileHelper));
+        gen.addProvider(new ModItemModelProvider(gen, existingFileHelper));
+
+        ModBlockTagsProvider modBlockTagsProvider = new ModBlockTagsProvider(gen, existingFileHelper);
+        ModItemTagsProvider modItemTagsProvider = new ModItemTagsProvider(gen, modBlockTagsProvider, existingFileHelper);
+        gen.addProvider(modBlockTagsProvider);
+        gen.addProvider(modItemTagsProvider);
     }
 }

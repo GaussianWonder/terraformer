@@ -6,8 +6,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-public class TerraformerBlockStateProvider extends BlockStateProvider {
-    public TerraformerBlockStateProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
+public class ModBlockStateProvider extends BlockStateProvider {
+    public ModBlockStateProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
         super(gen, TerraformerMod.MOD_ID, existingFileHelper);
     }
 

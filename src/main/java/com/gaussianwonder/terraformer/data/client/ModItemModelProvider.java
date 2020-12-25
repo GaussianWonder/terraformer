@@ -9,8 +9,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 
-public class TerraformerItemModelProvider extends ItemModelProvider {
-    public TerraformerItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+public class ModItemModelProvider extends ItemModelProvider {
+    public ModItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator, TerraformerMod.MOD_ID, existingFileHelper);
     }
 
