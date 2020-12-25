@@ -25,7 +25,7 @@ public class ModBlock<BlockType extends BaseBlock, BlockItemType extends BaseBlo
         item = RegistryHandler.ITEMS.register(name, () -> (BlockItemType) blockItemSupplier.apply(get()));
     }
 
-    public ModBlock(String name, final Supplier<? extends BlockType> blockSupplier, final ItemProvider<BlockItemType, BlockType> blockItemSupplier) {
+    public ModBlock(String name, final Supplier<? extends BlockType> blockSupplier, final ItemSupplier<BlockItemType, BlockType> blockItemSupplier) {
         block = RegistryHandler.BLOCKS.register(name, blockSupplier);
         item = RegistryHandler.ITEMS.register(name, () -> blockItemSupplier.get(block.get()));
     }
@@ -39,7 +39,7 @@ public class ModBlock<BlockType extends BaseBlock, BlockItemType extends BaseBlo
     }
 
     @FunctionalInterface
-    public interface ItemProvider<BlockItemType, BlockType> {
+    public interface ItemSupplier<BlockItemType, BlockType> {
         BlockItemType get(BlockType blockType);
     }
 }
