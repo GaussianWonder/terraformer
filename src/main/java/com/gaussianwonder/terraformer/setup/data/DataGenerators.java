@@ -18,6 +18,13 @@ public class DataGenerators {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
+        /**TODO Update the data generation system
+         *TODO Since i want a class / item or block i can manage crafting recipes, loot tables, states and models
+         *  through a ModBlock or ModItem extension
+         *
+         * I still need to consider this move, it will make each Item / Block class pretty big and the same goes for the
+         *  DataGeneration.java file
+         */
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
