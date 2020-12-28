@@ -10,8 +10,11 @@ import java.util.function.Supplier;
 public class ModBlock<BlockType extends BaseBlock, BlockItemType extends BaseBlockItem> {
     public RegistryObject<BlockType> block;
     public RegistryObject<BlockItemType> item; // I don't think i'll ever need BlockItemType
+    public final String name;
 
     public ModBlock(String name, final Supplier<? extends BlockType> blockSupplier) {
+        this.name = name;
+
         final Function<BlockType, BaseBlockItem> blockItemSupplier = (BlockType block) -> new BaseBlockItem(block);
 
         block = RegistryHandler.BLOCKS.register(name, blockSupplier);
@@ -19,6 +22,8 @@ public class ModBlock<BlockType extends BaseBlock, BlockItemType extends BaseBlo
     }
 
     public ModBlock(String name, final Supplier<? extends BlockType> blockSupplier, Item.Properties blockItemProperties) {
+        this.name = name;
+
         final Function<BlockType, BaseBlockItem> blockItemSupplier = (BlockType block) -> new BaseBlockItem(block, blockItemProperties);
 
         block = RegistryHandler.BLOCKS.register(name, blockSupplier);
@@ -26,6 +31,8 @@ public class ModBlock<BlockType extends BaseBlock, BlockItemType extends BaseBlo
     }
 
     public ModBlock(String name, final Supplier<? extends BlockType> blockSupplier, final ItemSupplier<BlockItemType, BlockType> blockItemSupplier) {
+        this.name = name;
+
         block = RegistryHandler.BLOCKS.register(name, blockSupplier);
         item = RegistryHandler.ITEMS.register(name, () -> blockItemSupplier.get(block.get()));
     }

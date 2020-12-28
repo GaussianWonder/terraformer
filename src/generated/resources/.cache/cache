@@ -2,6 +2,7 @@
 448aacbbeb8cb557783ebafce1085165f8ab9945 assets/terraformer/models/block/test_block.json
 e703efeb90e26a43ce9716c439287e76d82e829f assets/terraformer/models/item/terraform_rod.json
 ae9a0f3d7940ed59af8a19d4aac4c00211fb9d58 assets/terraformer/models/item/test_block.json
+5bb2d66f4d5ceb55fda442242457bbdc141d8818 data/terraformer/loot_tables/blocks/test_block.json
 629a0ecea6a694e24edc53406d7456c37dd7c426 data/terraformer/tags/blocks/tests/block.json
 191574045ad71fff29539c34507afb5d8f397e16 data/terraformer/tags/items/rods/terraform.json
 629a0ecea6a694e24edc53406d7456c37dd7c426 data/terraformer/tags/items/tests/item.json

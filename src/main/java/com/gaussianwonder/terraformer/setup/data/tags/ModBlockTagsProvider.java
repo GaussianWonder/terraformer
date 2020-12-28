@@ -2,7 +2,6 @@ package com.gaussianwonder.terraformer.setup.data.tags;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import com.gaussianwonder.terraformer.setup.ModBlocks;
-import com.gaussianwonder.terraformer.setup.ModItems;
 import com.gaussianwonder.terraformer.setup.ModTags;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;

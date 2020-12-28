@@ -3,6 +3,7 @@ package com.gaussianwonder.terraformer.setup.data;
 import com.gaussianwonder.terraformer.TerraformerMod;
 import com.gaussianwonder.terraformer.setup.data.client.ModBlockStateProvider;
 import com.gaussianwonder.terraformer.setup.data.client.ModItemModelProvider;
+import com.gaussianwonder.terraformer.setup.data.loot.LootTables;
 import com.gaussianwonder.terraformer.setup.data.tags.ModBlockTagsProvider;
 import com.gaussianwonder.terraformer.setup.data.tags.ModItemTagsProvider;
 import net.minecraft.data.DataGenerator;
@@ -25,7 +26,7 @@ public class DataGenerators {
         gen.addProvider(new ModItemModelProvider(gen, existingFileHelper));
 
         // Loot Tables
-        
+        gen.addProvider(new LootTables(gen));
 
         // Tags
         ModBlockTagsProvider modBlockTagsProvider = new ModBlockTagsProvider(gen, existingFileHelper);

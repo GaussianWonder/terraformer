@@ -8,7 +8,6 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 
-//TODO add shortcyts
 public class ModTags {
     public static final class Blocks {
         // Block block tags
