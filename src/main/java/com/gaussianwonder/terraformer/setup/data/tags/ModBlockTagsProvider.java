@@ -16,6 +16,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void registerTags() {
-        getOrCreateBuilder(ModTags.Blocks.TESTS_BLOCK).add(ModBlocks.TEST_BLOCK.get());
+        getOrCreateBuilder(ModTags.Blocks.MATTER_UTILS).add(ModBlocks.MATTER_RECYCLER.get());
     }
 }

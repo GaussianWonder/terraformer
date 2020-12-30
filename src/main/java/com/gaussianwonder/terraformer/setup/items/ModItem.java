@@ -1,7 +1,6 @@
 package com.gaussianwonder.terraformer.setup.items;
 
 import com.gaussianwonder.terraformer.setup.RegistryHandler;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.function.Supplier;

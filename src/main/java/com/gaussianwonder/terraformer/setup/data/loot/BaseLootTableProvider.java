@@ -1,6 +1,6 @@
 package com.gaussianwonder.terraformer.setup.data.loot;
 
-import com.gaussianwonder.terraformer.setup.blocks.ModBlock;
+import com.gaussianwonder.terraformer.setup.blocks.BaseBlock;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
@@ -35,8 +35,8 @@ public abstract class BaseLootTableProvider extends LootTableProvider {
 
     protected abstract void addTables();
 
-    protected void addStandardTable(ModBlock block) {
-        lootTables.put(block.get(), createStandardTable(block.name, block.get()));
+    protected void addStandardTable(BaseBlock block) {
+        lootTables.put(block, createStandardTable(block.getName(), block));
     }
 
     protected LootTable.Builder createStandardTable(String name, Block block) {

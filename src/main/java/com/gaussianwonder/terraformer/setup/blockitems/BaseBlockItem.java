@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.setup.blocks;
+package com.gaussianwonder.terraformer.setup.blockitems;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import net.minecraft.block.Block;

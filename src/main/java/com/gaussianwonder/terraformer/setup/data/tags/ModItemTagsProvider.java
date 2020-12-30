@@ -17,7 +17,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
     @Override
     protected void registerTags() {
-        copy(ModTags.Blocks.TESTS_BLOCK, ModTags.Items.TESTS_ITEM);
+        copy(ModTags.Blocks.MATTER_UTILS, ModTags.Items.MATTER_UTILS);
 
         getOrCreateBuilder(ModTags.Items.RODS_TERRAFORM).add(ModItems.TERRAFORM_ROD.get());
     }

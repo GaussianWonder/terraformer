@@ -12,6 +12,7 @@ public class ModTags {
     public static final class Blocks {
         // Block block tags
         public static final ITag.INamedTag<Block> TESTS_BLOCK = mod("tests/block");
+        public static final ITag.INamedTag<Block> MATTER_UTILS = mod("matter/utils");
 
         // Tag Shortcuts
         private static ITag.INamedTag<Block> forge(String path) {
@@ -29,6 +30,7 @@ public class ModTags {
 
         // Block Item tags
         public static final ITag.INamedTag<Item> TESTS_ITEM = mod("tests/item");
+        public static final ITag.INamedTag<Item> MATTER_UTILS = mod("matter/utils");
 
         // Tag Shortcuts
         private static ITag.INamedTag<Item> forge(String path) {
