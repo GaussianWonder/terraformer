@@ -1,6 +1,6 @@
 package com.gaussianwonder.terraformer.setup;
 
-import com.gaussianwonder.terraformer.setup.blockitems.BaseBlockItem;
+import com.gaussianwonder.terraformer.setup.block_items.BaseBlockItem;
 import com.gaussianwonder.terraformer.setup.blocks.MatterRecyclerBlock;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
