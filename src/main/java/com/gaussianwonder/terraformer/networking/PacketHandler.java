@@ -1,5 +1,6 @@
 package com.gaussianwonder.terraformer.networking;
 
+import com.gaussianwonder.terraformer.TerraformerMod;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -17,20 +18,20 @@ public class PacketHandler {
     );
 
     public static void registerMessages() {
-        MATTER_CHANNEL.messageBuilder(MatterPacket.class, nextID())
-                .encoder(MatterPacket::encode)
-                .decoder(MatterPacket::decode)
-                .consumer(MatterPacket::handle)
+        MATTER_CHANNEL.messageBuilder(MatterUpdateMessage.class, nextID())
+                .encoder(MatterUpdateMessage::encode)
+                .decoder(MatterUpdateMessage::decode)
+                .consumer(MatterUpdateMessage::handle)
                 .add();
     }
 
-    public static void sendToClient(Object packet, ServerPlayerEntity player) {
-        MATTER_CHANNEL.sendTo(packet, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
-    }
-
-    public static void sendToServer(Object packet) {
-        MATTER_CHANNEL.sendToServer(packet);
-    }
+//    public static void updateMatterOn(MatterUpdateMessage packet, ServerPlayerEntity player) {
+//        MATTER_CHANNEL.sendTo(packet, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+//    }
+//
+//    public static void requestMatterUpdate(MatterUpdateMessage packet) {
+//        MATTER_CHANNEL.sendToServer(packet);
+//    }
 
     public static int nextID() {
         return ID++;

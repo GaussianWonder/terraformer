@@ -22,10 +22,13 @@ public class CapabilityMatter
                     public INBT writeNBT(Capability<IMatterStorage> capability, IMatterStorage instance, Direction side)
                     {
                         CompoundNBT tag = new CompoundNBT();
-                        tag.putFloat("matter", instance.getMatterStored());
+
+                        tag.putFloat("matter_stored", instance.getMatterStored());
+                        tag.putFloat("matter_capacity", instance.getMaxMatterStored());
+                        tag.putFloat("matter_receive", instance.getMaxReceived());
+                        tag.putFloat("matter_extract", instance.getMaxExtract());
 
                         return tag;
-                        // return FloatNBT.valueOf(instance.getMatterStored());
                     }
 
                     @Override
@@ -33,8 +36,11 @@ public class CapabilityMatter
                     {
                         if (!(instance instanceof MatterStorage))
                             throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
-                         ((MatterStorage)instance).setMatter(((CompoundNBT) nbt).getFloat("matter"));
-                         // .setMatter( ((FloatNBT)nbt).getFloat() )
+
+                        instance.setMatter(((CompoundNBT) nbt).getFloat("matter_stored"));
+                        instance.setMaxMatterStored(((CompoundNBT) nbt).getFloat("matter_capacity"));
+                        instance.setMaxReceived(((CompoundNBT) nbt).getFloat("matter_receive"));
+                        instance.setMaxExtract(((CompoundNBT) nbt).getFloat("matter_extract"));
                     }
                 },
                 () -> new MatterStorage(1000)

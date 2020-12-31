@@ -44,4 +44,11 @@ public interface IMatterStorage {
      * If this is false, then any calls to receiveMatter will return 0.0f.
      */
     boolean canReceive();
+
+    float getMaxReceived();
+    float getMaxExtract();
+    void setMatter(float matter);
+    void setMaxMatterStored(float capacity);
+    void setMaxReceived(float maxReceived);
+    void setMaxExtract(float maxExtract);
 }
