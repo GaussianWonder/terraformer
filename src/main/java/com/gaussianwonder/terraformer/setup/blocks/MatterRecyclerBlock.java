@@ -10,6 +10,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -30,8 +34,11 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class MatterRecyclerBlock extends BaseBlock {
@@ -88,7 +95,14 @@ public class MatterRecyclerBlock extends BaseBlock {
         return new MatterRecyclerTitle();
     }
 
+//TODO Creative middle button click copy - check NBT tags
+//    @Override
+//    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+//        return null;
+//    }
+
     // Model Related Methods Override
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         switch(state.get(FACING)) {
@@ -109,27 +123,51 @@ public class MatterRecyclerBlock extends BaseBlock {
         return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        TileEntity tileEntity = builder.get(LootParameters.BLOCK_ENTITY);
+        if(tileEntity instanceof MatterRecyclerTitle) {
+            final List<ItemStack> drops = new ArrayList<>();
+
+            ItemStack stack = ItemHandlerHelper.copyStackWithSize(new ItemStack(this), 1);
+            CompoundNBT tag = new CompoundNBT();
+            tag = ((MatterRecyclerTitle)tileEntity).write(tag);
+            stack.setTag(tag);
+
+            drops.add(stack);
+
+            System.out.println("I'm just about to give custom tags to this mother chucker!");
+            return drops;
+        }
+        else {
+            return super.getDrops(state, builder);
+        }
+    }
+
     @Override
     public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction) {
         return state.with(FACING, direction.rotate(state.get(FACING)));
     }
-
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.toRotation(state.get(FACING)));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return 0.65f;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
         switch(state.get(FACING)) {

@@ -154,25 +154,28 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
         };
     }
 
+    public void requestMatterUpdate() {
+        //TODO change this later into a complex networking solution that actually updates only when viewing the GUI
+        if (getWorld() != null && !getWorld().isRemote) {
+            BlockPos blockPos = getPos();
+            PacketHandler.MATTER_CHANNEL.send(
+                    PacketDistributor.NEAR.with( // Send to everyone NEAR
+                            () -> new PacketDistributor.TargetPoint(
+                                    blockPos.getX(), blockPos.getY(), blockPos.getZ(),
+                                    500,
+                                    getWorld().getDimensionKey()
+                            )
+                    ),
+                    new MatterUpdateMessage(matterStorage, blockPos)
+            );
+        }
+    }
+
     private MatterStorage createMatter() {
         return new MatterStorage(10000.0f, 0.5f) {
             @Override
             protected void onMatterChange() {
-                //TODO change this later into a complex networking solution that actually updates only when viewing the GUI
-                if (getWorld() != null && !getWorld().isRemote) {
-                    BlockPos blockPos = getPos();
-                    PacketHandler.MATTER_CHANNEL.send(
-                            PacketDistributor.NEAR.with( // Send to everyone NEAR
-                                    () -> new PacketDistributor.TargetPoint(
-                                            blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-                                            500,
-                                            getWorld().getDimensionKey()
-                                    )
-                            ),
-                            new MatterUpdateMessage(matterStorage, blockPos)
-                    );
-                }
-
+                requestMatterUpdate();
                 markDirty();
             }
         };

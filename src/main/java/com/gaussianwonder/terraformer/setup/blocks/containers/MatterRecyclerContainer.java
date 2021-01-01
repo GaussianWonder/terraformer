@@ -2,6 +2,7 @@ package com.gaussianwonder.terraformer.setup.blocks.containers;
 
 import com.gaussianwonder.terraformer.setup.ModBlocks;
 import com.gaussianwonder.terraformer.setup.ModContainers;
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTitle;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
 import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,11 +39,16 @@ public class MatterRecyclerContainer extends Container {
         }
 
         layoutPlayerInvetory(10, 70);
-        trackMatter();
+        initMatterRequest();
     }
 
-    private void trackMatter() {
+    private void initMatterRequest() {
         //TODO track the damned matter when the GUI is opened instead of updating the tile at each matter change
+        try { // Note that this is here ONLY because it waits for a MatterUpdate to send data update request
+            ((MatterRecyclerTitle) this.tileEntity).requestMatterUpdate();
+        }
+        catch (Exception e) {
+        }
     }
 
     public float getMatter() {
