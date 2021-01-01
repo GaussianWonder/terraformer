@@ -126,6 +126,7 @@ public class MatterRecyclerBlock extends BaseBlock {
     @SuppressWarnings("deprecation")
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        //TODO not working
         TileEntity tileEntity = builder.get(LootParameters.BLOCK_ENTITY);
         if(tileEntity instanceof MatterRecyclerTitle) {
             final List<ItemStack> drops = new ArrayList<>();
