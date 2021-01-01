@@ -22,6 +22,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MatterRecyclerTitle extends TileEntity implements ITickableTileEntity {
     private ItemStackHandler itemHandler = createHandler();
@@ -30,7 +31,7 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     private LazyOptional<IMatterStorage> matter = LazyOptional.of(() -> matterStorage);
 
-    private final int baseCooldown = 20; // 20 tick() calls
+    private final int baseCooldown = 20;
     private int cooldown = calculateCooldownTicks();
     private int efficiency = 0;
 
@@ -121,7 +122,7 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, /*@Nullable*/ Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handler.cast();
         }

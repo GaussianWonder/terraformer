@@ -1,5 +1,4 @@
 e703efeb90e26a43ce9716c439287e76d82e829f assets/terraformer/models/item/terraform_rod.json
-ae9a0f3d7940ed59af8a19d4aac4c00211fb9d58 assets/terraformer/models/item/test_block.json
 4c23a3236ecf413bd2cb1e9e8e08e09fb5974b96 data/terraformer/loot_tables/blocks/matter_recycler.json
 bf376992a5962caeef9fcc15594e838ab5f7c0a4 data/terraformer/tags/blocks/matter/utils.json
 bf376992a5962caeef9fcc15594e838ab5f7c0a4 data/terraformer/tags/items/matter/utils.json

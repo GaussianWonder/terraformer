@@ -11,16 +11,12 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -32,12 +28,13 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -126,19 +123,17 @@ public class MatterRecyclerBlock extends BaseBlock {
     @SuppressWarnings("deprecation")
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        //TODO not working
         TileEntity tileEntity = builder.get(LootParameters.BLOCK_ENTITY);
         if(tileEntity instanceof MatterRecyclerTitle) {
             final List<ItemStack> drops = new ArrayList<>();
+            ItemStack stack = new ItemStack(this);
 
-            ItemStack stack = ItemHandlerHelper.copyStackWithSize(new ItemStack(this), 1);
             CompoundNBT tag = new CompoundNBT();
-            tag = ((MatterRecyclerTitle)tileEntity).write(tag);
-            stack.setTag(tag);
+            ((MatterRecyclerTitle)tileEntity).write(tag);
 
+            stack.setTagInfo("BlockEntityTag", tag);
             drops.add(stack);
 
-            System.out.println("I'm just about to give custom tags to this mother chucker!");
             return drops;
         }
         else {
