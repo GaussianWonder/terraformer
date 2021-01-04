@@ -2,8 +2,6 @@ package com.gaussianwonder.terraformer.setup.capabilities.storage;
 
 import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundNBT> {

@@ -1,8 +1,6 @@
 package com.gaussianwonder.terraformer.networking.sync;
 
-import com.gaussianwonder.terraformer.networking.PacketHandler;
 import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTitle;
-import com.gaussianwonder.terraformer.setup.capabilities.storage.MatterStorage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
