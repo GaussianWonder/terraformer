@@ -17,6 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -50,8 +52,7 @@ public class MatterRecyclerContainer extends Container {
     }
 
     public void syncData() {
-        System.out.println("Requesting to sync");
-        PacketHandler.SYNC_CHANNEL.sendToServer(new MatterSyncMessage.Request(tileEntity.getPos()));
+        PacketHandler.SYNC_CHANNEL.sendToServer(new MatterSyncMessage(tileEntity.getPos()));
     }
 
     public float getMatter() {

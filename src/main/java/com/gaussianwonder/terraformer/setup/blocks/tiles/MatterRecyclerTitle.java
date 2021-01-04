@@ -151,7 +151,6 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
     }
 
     public void updateClient(MatterStorage updatedMatterStorage) {
-        System.out.println("Updating the client matter");
         matterStorage.update(updatedMatterStorage);
 
         markDirty();

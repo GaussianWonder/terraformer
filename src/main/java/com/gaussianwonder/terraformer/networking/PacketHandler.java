@@ -19,25 +19,11 @@ public class PacketHandler {
     );
 
     public static void registerMessages() {
-        SYNC_CHANNEL.messageBuilder(MatterSyncMessage.Request.class, nextID())
-                .encoder(MatterSyncMessage.Request::encode)
-                .decoder(MatterSyncMessage.Request::decode)
-                .consumer(MatterSyncMessage.Request::handle)
+        SYNC_CHANNEL.messageBuilder(MatterSyncMessage.class, nextID())
+                .encoder(MatterSyncMessage::encode)
+                .decoder(MatterSyncMessage::decode)
+                .consumer(MatterSyncMessage::handle)
                 .add();
-
-        SYNC_CHANNEL.messageBuilder(MatterSyncMessage.Response.class, nextID())
-                .encoder(MatterSyncMessage.Response::encode)
-                .decoder(MatterSyncMessage.Response::decode)
-                .consumer(MatterSyncMessage.Response::handle)
-                .add();
-    }
-
-    public static void syncClient(MatterSyncMessage.Response packet, ServerPlayerEntity player) {
-        SYNC_CHANNEL.sendTo(packet, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
-    }
-
-    public static void requestSync(MatterSyncMessage packet) {
-        SYNC_CHANNEL.sendToServer(packet);
     }
 
     private static int nextID() {
