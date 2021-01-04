@@ -1,7 +1,5 @@
 package com.gaussianwonder.terraformer.setup.blocks.tiles;
 
-import com.gaussianwonder.terraformer.networking.MatterUpdateMessage;
-import com.gaussianwonder.terraformer.networking.PacketHandler;
 import com.gaussianwonder.terraformer.setup.ModTiles;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
 import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
@@ -13,16 +11,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class MatterRecyclerTitle extends TileEntity implements ITickableTileEntity {
     private ItemStackHandler itemHandler = createHandler();
@@ -37,6 +32,20 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
 
     public MatterRecyclerTitle() {
         super(ModTiles.MATTER_RECYCLER_TILE.get());
+    }
+
+    /**
+     * Formula: { 0.4 + [ 1 / (e ^ upgrades/10) ] } * baseCooldown.
+     * Meaning:
+     *  At first it is worse than expected, working at 1.4x the speed.
+     *  Best it can do is 0.4x the base working tick speed after a handful of upgrades.
+     *  Upgrading infinitely does nothing.
+     * @return the number of ticks before recycling the next item
+     */
+    public int calculateCooldownTicks() {
+        double lowerBase = 0.4;
+        double graphSlope = 1 / Math.pow(Math.E, (double)efficiency / 10);
+        return Math.max((int)((lowerBase + graphSlope ) * baseCooldown), 2); // safeguards
     }
 
     @Override
@@ -70,36 +79,6 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
         }
     }
 
-    public void clientUpdateMatter(float matter, float capacity, float maxReceive, float maxExtract) {
-        matterStorage.setMatter(matter);
-        matterStorage.setMaxMatterStored(capacity);
-        matterStorage.setMaxReceived(maxReceive);
-        matterStorage.setMaxExtract(maxExtract);
-
-        markDirty();
-    }
-
-    /**
-     * Formula: { 0.4 + [ 1 / (e ^ upgrades/10) ] } * baseCooldown.
-     * Meaning:
-     *  At first it is worse than expected, working at 1.4x the speed.
-     *  Best it can do is 0.4x the base working tick speed after a handful of upgrades.
-     *  Upgrading infinitely does nothing.
-     * @return the number of ticks before recycling the next item
-     */
-    private int calculateCooldownTicks() {
-        double lowerBase = 0.4;
-        double graphSlope = 1 / Math.pow(Math.E, (double)efficiency / 10);
-        return Math.max((int)((lowerBase + graphSlope ) * baseCooldown), 2); // safeguards
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        handler.invalidate();
-        matter.invalidate();
-    }
-
     @Override
     public void read(BlockState state, CompoundNBT tag) {
         itemHandler.deserializeNBT(tag.getCompound("inv"));
@@ -122,7 +101,7 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, /* @Nullable */ Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handler.cast();
         }
@@ -130,6 +109,13 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
             return matter.cast();
         }
         return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        handler.invalidate();
+        matter.invalidate();
     }
 
     private ItemStackHandler createHandler() {
@@ -155,30 +141,28 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
         };
     }
 
-    public void requestMatterUpdate() {
-        //TODO change this later into a complex networking solution that actually updates only when viewing the GUI
-        if (getWorld() != null && !getWorld().isRemote) {
-            BlockPos blockPos = getPos();
-            PacketHandler.MATTER_CHANNEL.send(
-                    PacketDistributor.NEAR.with( // Send to everyone NEAR
-                            () -> new PacketDistributor.TargetPoint(
-                                    blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-                                    500,
-                                    getWorld().getDimensionKey()
-                            )
-                    ),
-                    new MatterUpdateMessage(matterStorage, blockPos)
-            );
-        }
-    }
-
     private MatterStorage createMatter() {
         return new MatterStorage(10000.0f, 0.5f) {
             @Override
-            protected void onMatterChange() {
-                requestMatterUpdate();
+            public void onMatterChange() {
                 markDirty();
             }
         };
+    }
+
+    public void updateClient(MatterStorage updatedMatterStorage) {
+        System.out.println("Updating the client matter");
+        matterStorage.update(updatedMatterStorage);
+
+        markDirty();
+    }
+
+    public MatterStorage getCurrentMatter() {
+        return new MatterStorage(
+                matterStorage.getMatterStored(),
+                matterStorage.getMaxMatterStored(),
+                matterStorage.getMaxReceived(),
+                matterStorage.getMaxExtract()
+        );
     }
 }

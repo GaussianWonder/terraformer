@@ -1,10 +1,13 @@
 package com.gaussianwonder.terraformer.setup.blocks.containers;
 
+import com.gaussianwonder.terraformer.networking.PacketHandler;
+import com.gaussianwonder.terraformer.networking.sync.MatterSyncMessage;
 import com.gaussianwonder.terraformer.setup.ModBlocks;
 import com.gaussianwonder.terraformer.setup.ModContainers;
 import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTitle;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
 import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
+import com.gaussianwonder.terraformer.setup.capabilities.storage.MatterStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -39,16 +42,16 @@ public class MatterRecyclerContainer extends Container {
         }
 
         layoutPlayerInvetory(10, 70);
-        initMatterRequest();
+        syncData();
     }
 
-    private void initMatterRequest() {
-        //TODO track the damned matter when the GUI is opened instead of updating the tile at each matter change
-        try { // Note that this is here ONLY because it waits for a MatterUpdate to send data update request
-            ((MatterRecyclerTitle) this.tileEntity).requestMatterUpdate();
-        }
-        catch (Exception e) {
-        }
+    public int refreshRate() {
+        return ((MatterRecyclerTitle) this.tileEntity).calculateCooldownTicks();
+    }
+
+    public void syncData() {
+        System.out.println("Requesting to sync");
+        PacketHandler.SYNC_CHANNEL.sendToServer(new MatterSyncMessage.Request(tileEntity.getPos()));
     }
 
     public float getMatter() {

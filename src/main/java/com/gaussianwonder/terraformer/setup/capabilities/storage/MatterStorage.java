@@ -2,6 +2,8 @@ package com.gaussianwonder.terraformer.setup.capabilities.storage;
 
 import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundNBT> {
@@ -12,38 +14,39 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
 
     public MatterStorage(float capacity)
     {
-        this(capacity, capacity, capacity, 0.0f);
+        this(0.0f, capacity, capacity, capacity);
     }
 
     public MatterStorage(float capacity, float maxTransfer)
     {
-        this(capacity, maxTransfer, maxTransfer, 0.0f);
+        this(0.0f, capacity, maxTransfer, maxTransfer);
     }
 
     public MatterStorage(float capacity, float maxReceive, float maxExtract)
     {
-        this(capacity, maxReceive, maxExtract, 0.0f);
+        this(0.0f, capacity, maxReceive, maxExtract);
     }
 
-    public MatterStorage(float capacity, float maxReceive, float maxExtract, float matter)
+    public MatterStorage(float matter, float capacity, float maxReceive, float maxExtract)
     {
+        this.matter = Math.max(0, Math.min(capacity, matter));
         this.capacity = capacity;
         this.maxReceive = maxReceive;
         this.maxExtract = maxExtract;
-        this.matter = Math.max(0 , Math.min(capacity, matter));
     }
 
-    protected void onMatterChange() { }
+    public void onMatterChange() { }
 
     public float receiveMatter(float maxReceive, boolean simulate) {
         if (!canReceive())
             return 0.0f;
 
         float matterReceived = Math.min(capacity - matter, Math.min(this.maxReceive, maxReceive));
-        if (!simulate)
+        if (!simulate) {
             matter += matterReceived;
+            onMatterChange();
+        }
 
-        onMatterChange();
         return matterReceived;
     }
 
@@ -52,11 +55,20 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
             return 0.0f;
 
         float matterExtracted = Math.min(matter, Math.min(this.maxExtract, maxExtract));
-        if (!simulate)
+        if (!simulate) {
             matter -= matterExtracted;
+            onMatterChange();
+        }
 
-        onMatterChange();
         return matterExtracted;
+    }
+
+    public boolean canExtract() {
+        return this.maxExtract > 0.0f;
+    }
+
+    public boolean canReceive() {
+        return this.maxReceive > 0.0f;
     }
 
     public float getMatterStored() {
@@ -65,14 +77,6 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
 
     public float getMaxMatterStored() {
         return capacity;
-    }
-
-    public boolean canExtract() {
-        return this.maxExtract > 0;
-    }
-
-    public boolean canReceive() {
-        return this.maxReceive > 0;
     }
 
     public float getMaxReceived() {
@@ -119,5 +123,12 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
         setMaxMatterStored(nbt.getFloat("matter_capacity"));
         setMaxReceived(nbt.getFloat("matter_receive"));
         setMaxExtract(nbt.getFloat("matter_extract"));
+    }
+
+    public void update(MatterStorage updatedMatterStorage) {
+        this.matter = updatedMatterStorage.getMatterStored();
+        this.capacity = updatedMatterStorage.getMaxMatterStored();
+        this.maxReceive = updatedMatterStorage.getMaxReceived();
+        this.maxExtract = updatedMatterStorage.getMaxExtract();
     }
 }

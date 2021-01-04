@@ -12,10 +12,16 @@ import net.minecraft.util.text.ITextComponent;
 
 //TODO implement shortcuts for ResourceLocation in a default abstract class of ContainerScreen<T> (this.mod() & this.forge())
 public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContainer> {
+    private int currentTick;
+    private int refreshRate;
     private final ResourceLocation GUI = mod("matter_recycler_gui.png");
 
     public MatterRecyclerScreen(MatterRecyclerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
+
+        // Update trigger
+        currentTick = 0;
+        refreshRate = container.refreshRate();
     }
 
     @Override
@@ -41,6 +47,20 @@ public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContaine
         int relX = (this.width - this.xSize) / 2;
         int relY = (this.height - this.ySize) / 2;
         this.blit(matrixStack, relX, relY, 0, 0, this.xSize, this.ySize);
+    }
+
+    @Override
+    public void tick() {
+        System.out.println("Tick number: " + currentTick);
+        if(currentTick >= refreshRate) {
+            currentTick = 0;
+            refreshRate = container.refreshRate();
+
+            container.syncData();
+        }
+
+        ++currentTick;
+        super.tick();
     }
 
     protected static ResourceLocation forge(String path) {
