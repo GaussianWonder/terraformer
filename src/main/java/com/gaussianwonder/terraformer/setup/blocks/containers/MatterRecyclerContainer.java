@@ -72,6 +72,10 @@ public class MatterRecyclerContainer extends Container {
         return tileEntity.getCapability(CapabilityMachine.MACHINE).map(IMachineHandler::getInputSupplyFactor).orElse(0.0f);
     }
 
+    public IMachineHandler.StatsRatio getStatsRatio() {
+        return tileEntity.getCapability(CapabilityMachine.MACHINE).map(IMachineHandler::getRatio).orElse(new IMachineHandler.StatsRatio());
+    }
+
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for(int i=0; i<amount; ++i) {
             addSlot(new SlotItemHandler(handler, index, x, y));

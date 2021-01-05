@@ -196,4 +196,18 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
     public Stats getUpgradedStats() {
         return this.upgradedStats;
     }
+
+    public StatsRatio getRatio() {
+        float totalFactor = speedProductionFactor + outputProductionFactor + inputSupplyFactor;
+
+        float speedRatio = speedProductionFactor/totalFactor;
+        float outputRatio = outputProductionFactor/totalFactor;
+        float inputRatio = inputSupplyFactor/totalFactor;
+
+        return new StatsRatio(
+                speedRatio,
+                outputRatio,
+                inputRatio
+        );
+    }
 }

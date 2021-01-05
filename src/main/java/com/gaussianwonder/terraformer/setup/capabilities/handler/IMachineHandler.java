@@ -20,6 +20,27 @@ public interface IMachineHandler {
             this.input = input;
         }
     }
+    Stats getBaseStats();
+    Stats getUpgradedStats();
+
+    class StatsRatio {
+        public float speed; // values between 1 and 0, representing the % an upgrade is affecting the machine
+        public float output; // these are directly related to multiply factors
+        public float input;
+
+        public StatsRatio(float speed, float output, float input) {
+            this.speed = speed;
+            this.output = output;
+            this.input = input;
+        }
+
+        public StatsRatio() {
+            this.speed = 0.0f;
+            this.output = 0.0f;
+            this.input = 0.0f;
+        }
+    }
+    StatsRatio getRatio();
 
     enum Target {
         SPEED,
@@ -95,6 +116,4 @@ public interface IMachineHandler {
     float getSpeedProductionFactor();
 
     int getCooldown();
-    Stats getBaseStats();
-    Stats getUpgradedStats();
 }

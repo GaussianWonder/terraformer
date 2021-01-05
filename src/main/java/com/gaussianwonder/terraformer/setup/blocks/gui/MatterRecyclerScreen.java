@@ -2,8 +2,8 @@ package com.gaussianwonder.terraformer.setup.blocks.gui;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import com.gaussianwonder.terraformer.setup.blocks.containers.MatterRecyclerContainer;
+import com.gaussianwonder.terraformer.setup.capabilities.handler.IMachineHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,13 +41,20 @@ public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContaine
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         assert this.minecraft != null;
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.minecraft.getTextureManager().bindTexture(GUI);
 
         int relX = (this.width - this.xSize) / 2;
         int relY = (this.height - this.ySize) / 2;
         this.blit(matrixStack, relX, relY, 0, 0, this.xSize, this.ySize);
+
+        IMachineHandler.StatsRatio statsRatio = this.container.getStatsRatio();
+        if (validStatsRatio(statsRatio)) {
+            this.blit(matrixStack, relX + 150, relY + 11, 180, 0, 4, (int)(29 * statsRatio.speed));
+            this.blit(matrixStack, relX + 158, relY + 11, 184, 0, 4, (int)(29 * statsRatio.output));
+            this.blit(matrixStack, relX + 166, relY + 11, 188, 0, 4, (int)(29 * statsRatio.input));
+        }
     }
 
     @Override
@@ -70,5 +77,9 @@ public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContaine
 
     protected static ResourceLocation mod(String name) {
         return new ResourceLocation(TerraformerMod.MOD_ID, "textures/gui/" + name);
+    }
+
+    private boolean validStatsRatio(IMachineHandler.StatsRatio statsRatio) {
+        return statsRatio.speed != 0.0f && statsRatio.input != 0.0f && statsRatio.output != 0.0f;
     }
 }
