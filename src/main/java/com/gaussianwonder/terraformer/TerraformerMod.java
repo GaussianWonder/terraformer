@@ -3,7 +3,6 @@ package com.gaussianwonder.terraformer;
 import com.gaussianwonder.terraformer.setup.ClientSetup;
 import com.gaussianwonder.terraformer.setup.ModItems;
 import com.gaussianwonder.terraformer.setup.RegistryHandler;
-import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;

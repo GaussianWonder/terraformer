@@ -1,13 +1,15 @@
 package com.gaussianwonder.terraformer.setup.blocks.containers;
 
 import com.gaussianwonder.terraformer.networking.PacketHandler;
+import com.gaussianwonder.terraformer.networking.sync.MachineSyncMessage;
 import com.gaussianwonder.terraformer.networking.sync.MatterSyncMessage;
 import com.gaussianwonder.terraformer.setup.ModBlocks;
 import com.gaussianwonder.terraformer.setup.ModContainers;
-import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTitle;
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTile;
+import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMachine;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
-import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
-import com.gaussianwonder.terraformer.setup.capabilities.storage.MatterStorage;
+import com.gaussianwonder.terraformer.setup.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.setup.capabilities.storage.IMatterStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -46,15 +48,28 @@ public class MatterRecyclerContainer extends Container {
     }
 
     public int refreshRate() {
-        return ((MatterRecyclerTitle) this.tileEntity).calculateCooldownTicks();
+        return tileEntity.getCapability(CapabilityMachine.MACHINE).map(IMachineHandler::calculateCooldownTicks).orElse(20);
     }
 
     public void syncData() {
         PacketHandler.SYNC_CHANNEL.sendToServer(new MatterSyncMessage(tileEntity.getPos()));
+        PacketHandler.SYNC_CHANNEL.sendToServer(new MachineSyncMessage(tileEntity.getPos()));
     }
 
     public float getMatter() {
         return tileEntity.getCapability(CapabilityMatter.MATTER).map(IMatterStorage::getMatterStored).orElse(0.0f);
+    }
+
+    public float getSpeedFactor() {
+        return tileEntity.getCapability(CapabilityMachine.MACHINE).map(IMachineHandler::getSpeedProductionFactor).orElse(0.0f);
+    }
+
+    public float getOutputFactor() {
+        return tileEntity.getCapability(CapabilityMachine.MACHINE).map(IMachineHandler::getOutputProductionFactor).orElse(0.0f);
+    }
+
+    public float getInputFactor() {
+        return tileEntity.getCapability(CapabilityMachine.MACHINE).map(IMachineHandler::getInputSupplyFactor).orElse(0.0f);
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {

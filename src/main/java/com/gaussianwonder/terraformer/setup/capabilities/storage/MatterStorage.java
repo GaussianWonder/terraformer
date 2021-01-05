@@ -1,6 +1,5 @@
 package com.gaussianwonder.terraformer.setup.capabilities.storage;
 
-import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -128,5 +127,7 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
         this.capacity = updatedMatterStorage.getMaxMatterStored();
         this.maxReceive = updatedMatterStorage.getMaxReceived();
         this.maxExtract = updatedMatterStorage.getMaxExtract();
+
+        onMatterChange();
     }
 }

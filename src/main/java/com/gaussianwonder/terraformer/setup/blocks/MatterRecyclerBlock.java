@@ -1,7 +1,7 @@
 package com.gaussianwonder.terraformer.setup.blocks;
 
 import com.gaussianwonder.terraformer.setup.blocks.containers.MatterRecyclerContainer;
-import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTitle;
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTile;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -60,7 +60,7 @@ public class MatterRecyclerBlock extends BaseBlock {
     public ActionResultType onBlockActivated(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof MatterRecyclerTitle) {
+            if (tileEntity instanceof MatterRecyclerTile) {
                 INamedContainerProvider containerProvider = new INamedContainerProvider() {
                     @Override
                     public ITextComponent getDisplayName() {
@@ -89,7 +89,7 @@ public class MatterRecyclerBlock extends BaseBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new MatterRecyclerTitle();
+        return new MatterRecyclerTile();
     }
 
 //TODO Creative middle button click copy - check NBT tags
@@ -124,12 +124,12 @@ public class MatterRecyclerBlock extends BaseBlock {
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         TileEntity tileEntity = builder.get(LootParameters.BLOCK_ENTITY);
-        if(tileEntity instanceof MatterRecyclerTitle) {
+        if(tileEntity instanceof MatterRecyclerTile) {
             final List<ItemStack> drops = new ArrayList<>();
             ItemStack stack = new ItemStack(this);
 
             CompoundNBT tag = new CompoundNBT();
-            ((MatterRecyclerTitle)tileEntity).write(tag);
+            ((MatterRecyclerTile)tileEntity).write(tag);
 
             stack.setTagInfo("BlockEntityTag", tag);
             drops.add(stack);

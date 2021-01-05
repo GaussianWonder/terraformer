@@ -1,6 +1,7 @@
 package com.gaussianwonder.terraformer.networking;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
+import com.gaussianwonder.terraformer.networking.sync.MachineSyncMessage;
 import com.gaussianwonder.terraformer.networking.sync.MatterSyncMessage;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -21,6 +22,12 @@ public class PacketHandler {
                 .encoder(MatterSyncMessage::encode)
                 .decoder(MatterSyncMessage::decode)
                 .consumer(MatterSyncMessage::handle)
+                .add();
+
+        SYNC_CHANNEL.messageBuilder(MachineSyncMessage.class, nextID())
+                .encoder(MachineSyncMessage::encode)
+                .decoder(MachineSyncMessage::decode)
+                .consumer(MachineSyncMessage::handle)
                 .add();
     }
 

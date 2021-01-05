@@ -34,6 +34,7 @@ public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContaine
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Matter Stored: " + container.getMatter(), 10, 40, 0xffffff);
+        drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Efficiency: " + container.getSpeedFactor() + " - " + container.getOutputFactor() + " - " + container.getInputFactor(), 10, 50, 0xffffff);
     }
 
     @Override

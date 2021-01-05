@@ -2,7 +2,9 @@ package com.gaussianwonder.terraformer.setup;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import com.gaussianwonder.terraformer.networking.PacketHandler;
+import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMachine;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
+import com.gaussianwonder.terraformer.setup.capabilities.handler.MachineHandler;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -37,5 +39,6 @@ public class RegistryHandler {
     public static void commonSetup(final FMLClientSetupEvent event) {
         PacketHandler.registerMessages(); //TODO move this
         CapabilityMatter.register(); //TODO move this to a preInit step
+        CapabilityMachine.register();
     }
 }

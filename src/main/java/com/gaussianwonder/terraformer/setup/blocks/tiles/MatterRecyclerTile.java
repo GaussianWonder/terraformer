@@ -1,8 +1,11 @@
 package com.gaussianwonder.terraformer.setup.blocks.tiles;
 
 import com.gaussianwonder.terraformer.setup.ModTiles;
+import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMachine;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
-import com.gaussianwonder.terraformer.setup.capabilities.i_storage.IMatterStorage;
+import com.gaussianwonder.terraformer.setup.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.setup.capabilities.handler.MachineHandler;
+import com.gaussianwonder.terraformer.setup.capabilities.storage.IMatterStorage;
 import com.gaussianwonder.terraformer.setup.capabilities.storage.MatterStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -19,73 +22,55 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-public class MatterRecyclerTitle extends TileEntity implements ITickableTileEntity {
+public class MatterRecyclerTile extends TileEntity implements ITickableTileEntity {
     private ItemStackHandler itemHandler = createHandler();
     private MatterStorage matterStorage = createMatter();
+    private MachineHandler machineHandler = createMachine();
 
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
     private LazyOptional<IMatterStorage> matter = LazyOptional.of(() -> matterStorage);
+    private LazyOptional<IMachineHandler> machine = LazyOptional.of(() -> machineHandler);
 
-    private final int baseCooldown = 20;
-    private int cooldown = calculateCooldownTicks();
-    private int efficiency = 0;
-
-    public MatterRecyclerTitle() {
+    public MatterRecyclerTile() {
         super(ModTiles.MATTER_RECYCLER_TILE.get());
-    }
-
-    /**
-     * Formula: { 0.4 + [ 1 / (e ^ upgrades/10) ] } * baseCooldown.
-     * Meaning:
-     *  At first it is worse than expected, working at 1.4x the speed.
-     *  Best it can do is 0.4x the base working tick speed after a handful of upgrades.
-     *  Upgrading infinitely does nothing.
-     * @return the number of ticks before recycling the next item
-     */
-    public int calculateCooldownTicks() {
-        double lowerBase = 0.4;
-        double graphSlope = 1 / Math.pow(Math.E, (double)efficiency / 10);
-        return Math.max((int)((lowerBase + graphSlope ) * baseCooldown), 2); // safeguards
     }
 
     @Override
     public void tick() {
         if(world.isRemote) {
-            System.out.println("From client " + "(" + efficiency + "):" + matterStorage.getMatterStored());
+            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
+            System.out.println("From client " + "(" + details + "):" + matterStorage.getMatterStored());
             return; // only server-side processing
         } else {
-            System.out.println("From server " + "(" + efficiency + "):" + matterStorage.getMatterStored());
+            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
+            System.out.println("From server " + "(" + details + "):" + matterStorage.getMatterStored());
         }
 
-        if(cooldown <= 0) { // cooldown is over, you can recycle one more item
+        if(!machineHandler.isBusy()) {
             ItemStack stack = itemHandler.getStackInSlot(0);
 
             if(stack.getItem() == Items.DIAMOND) { //TODO change this to proper upgrade item
-                ++efficiency;
+                machineHandler.change(IMachineHandler.Target.SPEED, 1);
             }
             else if(!stack.isEmpty()){
                 //TODO Convert the Item into Matter according to a Dictionary
-                matterStorage.receiveMatter(1, false);
+                matterStorage.receiveMatter(machineHandler.getOutputProductionFactor(), false);
             }
 
-            itemHandler.extractItem(0, 1, false);
-            cooldown = calculateCooldownTicks();
+            itemHandler.extractItem(0, (int) Math.max(1, machineHandler.getInputSupplyFactor()), false);
 
+            machineHandler.busy();
             markDirty();
         }
-        else {
-            --cooldown;
-            markDirty();
-        }
+
+        machineHandler.tick();
     }
 
     @Override
     public void read(BlockState state, CompoundNBT tag) {
         itemHandler.deserializeNBT(tag.getCompound("inv"));
         matterStorage.deserializeNBT(tag.getCompound("matter"));
-
-        cooldown = tag.getInt("cooldown");
-        efficiency = tag.getInt("efficiency");
+        machineHandler.deserializeNBT(tag.getCompound("machine"));
         super.read(state, tag);
     }
 
@@ -93,9 +78,7 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
     public CompoundNBT write(CompoundNBT tag) {
         tag.put("inv", itemHandler.serializeNBT());
         tag.put("matter", matterStorage.serializeNBT());
-
-        tag.putInt("cooldown", cooldown);
-        tag.putInt("efficiency", efficiency);
+        tag.put("machine", machineHandler.serializeNBT());
         return super.write(tag);
     }
 
@@ -108,6 +91,9 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
         if(cap == CapabilityMatter.MATTER) {
             return matter.cast();
         }
+        if(cap == CapabilityMachine.MACHINE) {
+            return machine.cast();
+        }
         return super.getCapability(cap, side);
     }
 
@@ -116,6 +102,7 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
         super.remove();
         handler.invalidate();
         matter.invalidate();
+        machine.invalidate();
     }
 
     private ItemStackHandler createHandler() {
@@ -142,7 +129,7 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
     }
 
     private MatterStorage createMatter() {
-        return new MatterStorage(10000.0f, 0.5f) {
+        return new MatterStorage(1000000.0f, 100.0f) {
             @Override
             public void onMatterChange() {
                 markDirty();
@@ -150,9 +137,34 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
         };
     }
 
+    private MachineHandler createMachine() {
+        return new MachineHandler(
+                new IMachineHandler.Stats( // base
+                        20,
+                        1,
+                        1
+                ),
+                new IMachineHandler.Stats( // init upgrades
+                        0,
+                        0,
+                        0
+                )
+        ) {
+            @Override
+            public void onStatsChange() {
+                markDirty();
+            }
+        };
+    }
+
     public void updateClient(MatterStorage updatedMatterStorage) {
         matterStorage.update(updatedMatterStorage);
+        markDirty();
+    }
 
+    public void updateClient(MachineHandler updatedMachineHandler) {
+        machineHandler.setBaseStats(updatedMachineHandler.getBaseStats());
+        machineHandler.setUpgradedStats(updatedMachineHandler.getUpgradedStats());
         markDirty();
     }
 
@@ -162,6 +174,13 @@ public class MatterRecyclerTitle extends TileEntity implements ITickableTileEnti
                 matterStorage.getMaxMatterStored(),
                 matterStorage.getMaxReceived(),
                 matterStorage.getMaxExtract()
+        );
+    }
+
+    public MachineHandler getCurrentMachine() {
+        return new MachineHandler(
+                machineHandler.getBaseStats(),
+                machineHandler.getUpgradedStats()
         );
     }
 }

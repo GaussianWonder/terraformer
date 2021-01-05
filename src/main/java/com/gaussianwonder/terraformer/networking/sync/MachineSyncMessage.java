@@ -11,33 +11,34 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MatterSyncMessage {
+public class MachineSyncMessage {
     private BlockPos blockPos;
     private boolean failed;
 
-    MatterSyncMessage(boolean failed) {
+    MachineSyncMessage(boolean failed) {
         this.failed = failed;
     }
 
-    public MatterSyncMessage(BlockPos blockPos) {
+    public MachineSyncMessage(BlockPos blockPos) {
         this.blockPos = blockPos;
         this.failed = false;
     }
 
-    public static void encode(MatterSyncMessage packet, PacketBuffer buffer) {
+    public static void encode(MachineSyncMessage packet, PacketBuffer buffer) {
         buffer.writeBlockPos(packet.blockPos);
     }
 
-    public static MatterSyncMessage decode(PacketBuffer buffer) {
+    public static MachineSyncMessage decode(PacketBuffer buffer) {
         try {
-            return new MatterSyncMessage(buffer.readBlockPos());
+            return new MachineSyncMessage(buffer.readBlockPos());
         }
         catch (Exception e) {
-            return new MatterSyncMessage(false);
+            return new MachineSyncMessage(false);
         }
     }
 
-    public static void handle(MatterSyncMessage msg, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(MachineSyncMessage msg, Supplier<NetworkEvent.Context> ctx) {
+        System.out.println("I AM GOING TO UPDATE THIS MOTHER FUCKER");
         NetworkEvent.Context context = ctx.get();
         if (!msg.failed) {
             context.enqueueWork(() -> {
@@ -45,11 +46,13 @@ public class MatterSyncMessage {
                 ServerPlayerEntity serverPlayerEntity = context.getSender();
                 if (serverPlayerEntity != null && world != null && world.isBlockPresent(msg.blockPos) && serverPlayerEntity.world != null && serverPlayerEntity.world.isBlockPresent(msg.blockPos)) {
                     // client -> server type of message, everything is safe to be used
+                    System.out.println("PASSED THE FIRST IF");
                     TileEntity serverTileEntity = serverPlayerEntity.world.getTileEntity(msg.blockPos);
                     TileEntity clientTileEntity = world.getTileEntity(msg.blockPos);
                     if (serverTileEntity instanceof MatterRecyclerTile && clientTileEntity instanceof MatterRecyclerTile) {
+//                        System.out.println(((MatterRecyclerTile) clientTileEntity).getCurrentMachine().getSpeedProductionFactor() + " - " + ((MatterRecyclerTile) serverTileEntity).getCurrentMachine().getSpeedProductionFactor() );
                         ((MatterRecyclerTile) clientTileEntity).updateClient(
-                                ((MatterRecyclerTile) serverTileEntity).getCurrentMatter()
+                                ((MatterRecyclerTile) serverTileEntity).getCurrentMachine()
                         );
                     }
                 }
