@@ -10,6 +10,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
+import java.text.DecimalFormat;
+
 //TODO implement shortcuts for ResourceLocation in a default abstract class of ContainerScreen<T> (this.mod() & this.forge())
 public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContainer> {
     private int currentTick;
@@ -33,15 +35,19 @@ public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContaine
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-        drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Matter Stored: " + container.getMatter(), 10, 40, 0xffffff);
-        drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Efficiency: " + container.getSpeedFactor() + " - " + container.getOutputFactor() + " - " + container.getInputFactor(), 10, 50, 0xffffff);
+        //TODO change this to an animated horizontal bar
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Matter Stored: " + df.format(container.getMatter()), 10, 40, 0xffffff);
+
+        // Debug purpose only
+        drawString(matrixStack, Minecraft.getInstance().fontRenderer, "Efficiency: " + df.format(container.getSpeedFactor()) + " - " + df.format(container.getOutputFactor()) + " - " + df.format(container.getInputFactor()), 10, 50, 0xffffff);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         assert this.minecraft != null;
-
-        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.minecraft.getTextureManager().bindTexture(GUI);
 
