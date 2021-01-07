@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "terraformer:speed_upgrade",
+    "terraformer:speed_downgrade",
+    "terraformer:output_upgrade",
+    "terraformer:input_upgrade"
+  ]
+}

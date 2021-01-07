@@ -15,6 +15,12 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
+
+        defaultBuilder(itemGenerated, "speed_upgrade");
+        defaultBuilder(itemGenerated, "speed_downgrade");
+        defaultBuilder(itemGenerated, "output_upgrade");
+        defaultBuilder(itemGenerated, "input_upgrade");
+
         defaultBuilder(itemGenerated, "terraform_rod");
     }
 

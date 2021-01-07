@@ -1,5 +1,10 @@
+b0c363e0a955f4d44953b0b93262b19edd080486 assets/terraformer/models/item/input_upgrade.json
+1d9ed7742675728f35b46e5261e2a04f68111bd3 assets/terraformer/models/item/output_upgrade.json
+ece560824c5a86d5ab107c9806caa421eb7a3131 assets/terraformer/models/item/speed_downgrade.json
+071e5c8979e2116506351bf5e21223a9b3f853b4 assets/terraformer/models/item/speed_upgrade.json
 e703efeb90e26a43ce9716c439287e76d82e829f assets/terraformer/models/item/terraform_rod.json
 4c23a3236ecf413bd2cb1e9e8e08e09fb5974b96 data/terraformer/loot_tables/blocks/matter_recycler.json
 bf376992a5962caeef9fcc15594e838ab5f7c0a4 data/terraformer/tags/blocks/matter/utils.json
 bf376992a5962caeef9fcc15594e838ab5f7c0a4 data/terraformer/tags/items/matter/utils.json
 191574045ad71fff29539c34507afb5d8f397e16 data/terraformer/tags/items/rods/terraform.json
+82c152e3caa4ff8d4a819feb585e570d19a7fcbd data/terraformer/tags/items/upgrades/machine.json

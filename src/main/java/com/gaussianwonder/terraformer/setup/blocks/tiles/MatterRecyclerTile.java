@@ -1,5 +1,6 @@
 package com.gaussianwonder.terraformer.setup.blocks.tiles;
 
+import com.gaussianwonder.terraformer.setup.ModItems;
 import com.gaussianwonder.terraformer.setup.ModTiles;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMachine;
 import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
@@ -8,8 +9,8 @@ import com.gaussianwonder.terraformer.setup.capabilities.handler.MachineHandler;
 import com.gaussianwonder.terraformer.setup.capabilities.storage.IMatterStorage;
 import com.gaussianwonder.terraformer.setup.capabilities.storage.MatterStorage;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -47,17 +48,20 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
         }
 
         if(!machineHandler.isBusy()) {
-            ItemStack stack = itemHandler.getStackInSlot(0);
-
-            if(stack.getItem() == Items.DIAMOND) { //TODO change this to proper upgrade item
-                machineHandler.change(IMachineHandler.Target.SPEED, 1);
+            ItemStack extracted = itemHandler.extractItem(0, (int) Math.max(1, machineHandler.getInputSupplyFactor()), false);
+            if(!extracted.isEmpty()) {
+                Item item = extracted.getItem();
+                if(item == ModItems.SPEED_UPGRADE.get())
+                    machineHandler.change(IMachineHandler.Target.SPEED, extracted.getCount());
+                else if(item == ModItems.SPEED_DOWNGRADE.get())
+                    machineHandler.change(IMachineHandler.Target.SPEED, extracted.getCount() * -1);
+                else if(item == ModItems.OUTPUT_UPGRADE.get())
+                    machineHandler.change(IMachineHandler.Target.OUTPUT, extracted.getCount());
+                else if(item == ModItems.INPUT_UPGRADE.get())
+                    machineHandler.change(IMachineHandler.Target.INPUT, extracted.getCount());
+                else
+                    matterStorage.receiveMatter(machineHandler.getOutputProductionFactor() * extracted.getCount(), false);
             }
-            else if(!stack.isEmpty()){
-                //TODO Convert the Item into Matter according to a Dictionary
-                matterStorage.receiveMatter(machineHandler.getOutputProductionFactor(), false);
-            }
-
-            itemHandler.extractItem(0, (int) Math.max(1, machineHandler.getInputSupplyFactor()), false);
 
             machineHandler.busy();
             markDirty();

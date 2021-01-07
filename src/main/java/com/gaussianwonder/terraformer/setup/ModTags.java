@@ -27,6 +27,7 @@ public class ModTags {
     public static final class Items {
         // Item tags
         public static final ITag.INamedTag<Item> RODS_TERRAFORM = mod("rods/terraform");
+        public static final ITag.INamedTag<Item> UPGRADES_MACHINE = mod("upgrades/machine");
 
         // Block Item tags
         public static final ITag.INamedTag<Item> TESTS_ITEM = mod("tests/item");

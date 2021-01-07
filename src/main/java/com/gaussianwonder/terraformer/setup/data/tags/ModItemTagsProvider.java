@@ -19,6 +19,11 @@ public class ModItemTagsProvider extends ItemTagsProvider {
     protected void registerTags() {
         copy(ModTags.Blocks.MATTER_UTILS, ModTags.Items.MATTER_UTILS);
 
+        getOrCreateBuilder(ModTags.Items.UPGRADES_MACHINE).add(ModItems.SPEED_UPGRADE.get());
+        getOrCreateBuilder(ModTags.Items.UPGRADES_MACHINE).add(ModItems.SPEED_DOWNGRADE.get());
+        getOrCreateBuilder(ModTags.Items.UPGRADES_MACHINE).add(ModItems.OUTPUT_UPGRADE.get());
+        getOrCreateBuilder(ModTags.Items.UPGRADES_MACHINE).add(ModItems.INPUT_UPGRADE.get());
+
         getOrCreateBuilder(ModTags.Items.RODS_TERRAFORM).add(ModItems.TERRAFORM_ROD.get());
     }
 }

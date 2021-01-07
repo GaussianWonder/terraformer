@@ -1,6 +1,10 @@
 {
-  "item.terraformer.terraform_rod": "Terraform Rod",
+  "item.terraformer.speed_upgrade": "Speed Upgrade",
+  "item.terraformer.speed_downgrade": "Speed Downgrade",
+  "item.terraformer.output_upgrade": "Output Upgrade",
+  "item.terraformer.input_upgrade": "Input Upgrade",
 
+  "item.terraformer.terraform_rod": "Terraform Rod",
 
   "block.terraformer.test_block": "LMAO",
   "block.terraformer.matter_recycler": "Matter Recycler",

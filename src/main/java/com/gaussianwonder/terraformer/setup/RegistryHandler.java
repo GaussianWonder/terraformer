@@ -38,6 +38,7 @@ public class RegistryHandler {
 
     public static void commonSetup(final FMLClientSetupEvent event) {
         PacketHandler.registerMessages(); //TODO move this
+
         CapabilityMatter.register(); //TODO move this to a preInit step
         CapabilityMachine.register();
     }

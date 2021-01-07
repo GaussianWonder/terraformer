@@ -45,7 +45,7 @@ public interface IMachineHandler {
     enum Target {
         SPEED,
         OUTPUT,
-        SUPPLY
+        INPUT
     }
 
     /**

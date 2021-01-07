@@ -11,7 +11,7 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
     // These should be calculated by recalculateStats() using baseStats and upgradedStats
     // Do not Sync these with the client, ask it to calculate them instead
     protected int maxCooldown;
-    protected float speedProductionFactor; // this acts more as a constant for inner logic, but you can totally use it
+    protected float speedProductionFactor;
     protected float outputProductionFactor; // this is here for you to multiply when adding to the MatterStore
     protected float inputSupplyFactor; // this is here for you to multiply the number of items you extract to generate Matter
 
@@ -50,10 +50,11 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
 
     @Override
     public void recalculateStats() {
-        this.maxCooldown = calculateCooldownTicks();
         this.speedProductionFactor = calculateSpeedProductionFactor();
         this.outputProductionFactor = calculateOutputProductionFactor();
         this.inputSupplyFactor = calculateInputSupplyFactor();
+
+        this.maxCooldown = calculateCooldownTicks();
 
         onStatsChange();
     }
@@ -64,11 +65,8 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
     public int calculateCooldownTicks() {
         // you can spam speed upgrades, but you won't get anything out of it
         // however you can go the other way around, make it go slow and benefit from bonus output production
-        double efficiency = upgradedStats.speed;
-        double lowerBound = baseStats.speed/2.0f;
-        double plot = (double)(2* baseStats.speed) / Math.pow(Math.E, efficiency / baseStats.speed);
 
-        return (int)(lowerBound + plot);
+        return (int)(speedProductionFactor * baseStats.speed);
     }
 
     @Override
@@ -84,21 +82,30 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
     }
 
     @Override
+    public float calculateSpeedProductionFactor() {
+        // best speed x0.3
+        // default x1.3
+        // worst -infinity (but you get output reward)
+        return (float) (0.3F + (1F / Math.pow(Math.E, (double)upgradedStats.speed / 30F)));
+    }
+
+    @Override
     public float calculateOutputProductionFactor() {
-        // decrease the output production when going fast
-        return baseStats.output/speedProductionFactor + upgradedStats.output;
+        // decrease the output production when going fast, increase it when going slow
+        return speedProductionFactor * (baseStats.output + (
+                (float)(1F - 1F / Math.pow(Math.E, (double)upgradedStats.output / 30F)) * 1.2F
+                ));
+
+        // 20% upgrade controlled
+        // 80% speed controlled
     }
 
     @Override
     public float calculateInputSupplyFactor() {
-        // make it suck more items in when going slow, but with diminishing effects,
-        // such that speed upgrades still make sense
-        return baseStats.input*(outputProductionFactor * 0.80f) + upgradedStats.input/(speedProductionFactor * 0.80f);
-    }
-
-    @Override
-    public float calculateSpeedProductionFactor() {
-        return ((float)baseStats.speed+2) / maxCooldown;
+        // "speed" can be achieved if input is high enough, what i want to dodge is a scenario in which
+        // output + input upgrades are way too convenient, since you can't have output with speed
+        // so input will be directly proportional with speed, and the max limit will be controlled by base stats
+        return baseStats.input + Math.min(baseStats.input, upgradedStats.input/100F)/speedProductionFactor;
     }
 
     @Override
@@ -110,7 +117,7 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
             case OUTPUT:
                 upgradedStats.output += value;
                 break;
-            case SUPPLY:
+            case INPUT:
                 upgradedStats.input += value;
                 break;
         }
@@ -198,16 +205,15 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
     }
 
     public StatsRatio getRatio() {
-        float totalFactor = speedProductionFactor + outputProductionFactor + inputSupplyFactor;
+        float speedRatio = (float)baseStats.speed / maxCooldown;
+        float outputRatio = outputProductionFactor;
+        float inputRatio = inputSupplyFactor;
 
-        float speedRatio = speedProductionFactor/totalFactor;
-        float outputRatio = outputProductionFactor/totalFactor;
-        float inputRatio = inputSupplyFactor/totalFactor;
-
+        float totalRatio = speedRatio + outputRatio + inputRatio;
         return new StatsRatio(
-                speedRatio,
-                outputRatio,
-                inputRatio
+                speedRatio / totalRatio,
+                outputRatio / totalRatio,
+                inputRatio / totalRatio
         );
     }
 }
