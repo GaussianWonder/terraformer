@@ -34,7 +34,7 @@ public class TerraformerMod
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::setup);
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(RegistryHandler::commonSetup); //TODO move this to a better place
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(RegistryHandler::commonSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

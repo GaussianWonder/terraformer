@@ -1,7 +1,7 @@
-package com.gaussianwonder.terraformer.setup.capabilities;
+package com.gaussianwonder.terraformer.capabilities;
 
-import com.gaussianwonder.terraformer.setup.capabilities.storage.IMatterStorage;
-import com.gaussianwonder.terraformer.setup.capabilities.storage.MatterStorage;
+import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
+import com.gaussianwonder.terraformer.capabilities.storage.MatterStorage;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;

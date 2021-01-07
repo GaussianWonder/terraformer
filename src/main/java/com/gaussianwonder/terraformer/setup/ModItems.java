@@ -3,7 +3,6 @@ package com.gaussianwonder.terraformer.setup;
 import com.gaussianwonder.terraformer.setup.items.BaseItem;
 import net.minecraftforge.fml.RegistryObject;
 
-//TODO Adapt to a proper BaseItem
 public class ModItems {
     // Machine upgrades
     public static final RegistryObject<BaseItem> SPEED_UPGRADE = RegistryHandler.ITEMS.register("speed_upgrade", BaseItem::new);

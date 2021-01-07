@@ -1,7 +1,7 @@
-package com.gaussianwonder.terraformer.setup.capabilities;
+package com.gaussianwonder.terraformer.capabilities;
 
-import com.gaussianwonder.terraformer.setup.capabilities.handler.IMachineHandler;
-import com.gaussianwonder.terraformer.setup.capabilities.handler.MachineHandler;
+import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.capabilities.handler.MachineHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;

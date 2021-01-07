@@ -2,9 +2,8 @@ package com.gaussianwonder.terraformer.setup;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import com.gaussianwonder.terraformer.networking.PacketHandler;
-import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMachine;
-import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
-import com.gaussianwonder.terraformer.setup.capabilities.handler.MachineHandler;
+import com.gaussianwonder.terraformer.capabilities.CapabilityMachine;
+import com.gaussianwonder.terraformer.capabilities.CapabilityMatter;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -15,7 +14,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO Setup TILES and Containers
 public class RegistryHandler {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, TerraformerMod.MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, TerraformerMod.MOD_ID);
@@ -37,9 +35,9 @@ public class RegistryHandler {
     }
 
     public static void commonSetup(final FMLClientSetupEvent event) {
-        PacketHandler.registerMessages(); //TODO move this
+        PacketHandler.registerMessages();
 
-        CapabilityMatter.register(); //TODO move this to a preInit step
+        CapabilityMatter.register();
         CapabilityMachine.register();
     }
 }

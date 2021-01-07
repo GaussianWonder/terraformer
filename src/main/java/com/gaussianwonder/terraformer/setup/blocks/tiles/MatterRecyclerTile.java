@@ -2,12 +2,12 @@ package com.gaussianwonder.terraformer.setup.blocks.tiles;
 
 import com.gaussianwonder.terraformer.setup.ModItems;
 import com.gaussianwonder.terraformer.setup.ModTiles;
-import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMachine;
-import com.gaussianwonder.terraformer.setup.capabilities.CapabilityMatter;
-import com.gaussianwonder.terraformer.setup.capabilities.handler.IMachineHandler;
-import com.gaussianwonder.terraformer.setup.capabilities.handler.MachineHandler;
-import com.gaussianwonder.terraformer.setup.capabilities.storage.IMatterStorage;
-import com.gaussianwonder.terraformer.setup.capabilities.storage.MatterStorage;
+import com.gaussianwonder.terraformer.capabilities.CapabilityMachine;
+import com.gaussianwonder.terraformer.capabilities.CapabilityMatter;
+import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.capabilities.handler.MachineHandler;
+import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
+import com.gaussianwonder.terraformer.capabilities.storage.MatterStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

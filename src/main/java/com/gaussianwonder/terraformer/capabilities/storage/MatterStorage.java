@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.setup.capabilities.storage;
+package com.gaussianwonder.terraformer.capabilities.storage;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
