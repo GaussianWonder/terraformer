@@ -4,29 +4,29 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundNBT> {
-    protected float matter;
+    protected Matter matter;
     protected float capacity;
     protected float maxReceive;
     protected float maxExtract;
 
     public MatterStorage(float capacity)
     {
-        this(0.0f, capacity, capacity, capacity);
+        this(new Matter(), capacity, capacity, capacity);
     }
 
     public MatterStorage(float capacity, float maxTransfer)
     {
-        this(0.0f, capacity, maxTransfer, maxTransfer);
+        this(new Matter(), capacity, maxTransfer, maxTransfer);
     }
 
     public MatterStorage(float capacity, float maxReceive, float maxExtract)
     {
-        this(0.0f, capacity, maxReceive, maxExtract);
+        this(new Matter(), capacity, maxReceive, maxExtract);
     }
 
-    public MatterStorage(float matter, float capacity, float maxReceive, float maxExtract)
+    public MatterStorage(Matter matter, float capacity, float maxReceive, float maxExtract)
     {
-        this.matter = Math.max(0, Math.min(capacity, matter));
+        this.matter = new Matter(matter, capacity); // cap the matter to the capacity
         this.capacity = capacity;
         this.maxReceive = maxReceive;
         this.maxExtract = maxExtract;
@@ -34,30 +34,32 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
 
     public void onMatterChange() { }
 
-    public float receiveMatter(float maxReceive, boolean simulate) {
+    public Matter receiveMatter(Matter maxReceive, boolean simulate) {
         if (!canReceive())
-            return 0.0f;
+            return new Matter();
 
-        float matterReceived = Math.min(capacity - matter, Math.min(this.maxReceive, maxReceive));
+        Matter maxMatterToReceive = Matter.capByCapacity(maxReceive, this.maxReceive);
+        Matter actualReceivedMatter = Matter.capByCapacity(maxMatterToReceive, capacity - matter.getMatter());
         if (!simulate) {
-            matter += matterReceived;
+            matter.add(actualReceivedMatter);
             onMatterChange();
         }
 
-        return matterReceived;
+        return actualReceivedMatter;
     }
 
-    public float extractMatter(float maxExtract, boolean simulate) {
+    public Matter extractMatter(Matter maxExtract, boolean simulate) {
         if (!canExtract())
-            return 0.0f;
+            return new Matter();
 
-        float matterExtracted = Math.min(matter, Math.min(this.maxExtract, maxExtract));
+        Matter maxMatterToExtract = Matter.capByCapacity(maxExtract, this.maxExtract);
+        Matter actualReceivedMatter = Matter.capByCapacity(maxMatterToExtract, matter.getMatter());
         if (!simulate) {
-            matter -= matterExtracted;
+            matter.substract(actualReceivedMatter);
             onMatterChange();
         }
 
-        return matterExtracted;
+        return actualReceivedMatter;
     }
 
     public boolean canExtract() {
@@ -68,8 +70,8 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
         return this.maxReceive > 0.0f;
     }
 
-    public float getMatterStored() {
-        return matter;
+    public Matter getMatterStored() {
+        return new Matter(matter);
     }
 
     public float getMaxMatterStored() {
@@ -94,7 +96,7 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
         onMatterChange();
     }
 
-    public void setMatter(float matter) {
+    public void setMatter(Matter matter) {
         this.matter = matter;
         onMatterChange();
     }
@@ -107,7 +109,10 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
     public CompoundNBT serializeNBT() {
         CompoundNBT tag = new CompoundNBT();
 
-        tag.putFloat("matter_stored", getMatterStored());
+        tag.putFloat("solid_matter_stored", matter.solid);
+        tag.putFloat("soft_matter_stored", matter.soft);
+        tag.putFloat("granular_matter_stored", matter.granular);
+
         tag.putFloat("matter_capacity", getMaxMatterStored());
         tag.putFloat("matter_receive", getMaxReceived());
         tag.putFloat("matter_extract", getMaxExtract());
@@ -116,7 +121,12 @@ public class MatterStorage implements IMatterStorage, INBTSerializable<CompoundN
     }
 
     public void deserializeNBT(CompoundNBT nbt) {
-        setMatter(nbt.getFloat("matter_stored"));
+        setMatter(new Matter(
+                nbt.getFloat("solid_matter_stored"),
+                nbt.getFloat("soft_matter_stored"),
+                nbt.getFloat("granular_matter_stored")
+        ));
+
         setMaxMatterStored(nbt.getFloat("matter_capacity"));
         setMaxReceived(nbt.getFloat("matter_receive"));
         setMaxExtract(nbt.getFloat("matter_extract"));

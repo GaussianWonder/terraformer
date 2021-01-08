@@ -59,8 +59,9 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
                     machineHandler.change(IMachineHandler.Target.OUTPUT, extracted.getCount());
                 else if(item == ModItems.INPUT_UPGRADE.get())
                     machineHandler.change(IMachineHandler.Target.INPUT, extracted.getCount());
-                else
-                    matterStorage.receiveMatter(machineHandler.getOutputProductionFactor() * extracted.getCount(), false);
+                else {
+//                    matterStorage.receiveMatter(machineHandler.getOutputProductionFactor() * extracted.getCount(), false);
+                }
             }
 
             machineHandler.busy();
