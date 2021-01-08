@@ -4,12 +4,13 @@ import com.gaussianwonder.terraformer.TerraformerMod;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class BaseItem extends Item {
-    public BaseItem() {
+public class UpgradeItem extends BaseItem{
+    public UpgradeItem() {
         super(new Item.Properties().group(TerraformerMod.ITEM_GROUP));
     }
 
-    public BaseItem(Item.Properties properties) {
-        super(properties.group(TerraformerMod.ITEM_GROUP)); // any item of this mod should always be part of the custom group
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 100;
     }
 }

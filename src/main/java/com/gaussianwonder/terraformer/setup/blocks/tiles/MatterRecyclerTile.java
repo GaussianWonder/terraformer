@@ -126,8 +126,8 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                return stack; // Anything can be inserted into the recycler
-                // return super.insertItem(slot, stack, simulate);
+//                return stack; // Anything can be inserted into the recycler
+                return super.insertItem(slot, stack, simulate);
             }
         };
     }
