@@ -41,12 +41,12 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
     @Override
     public void tick() {
         if(world.isRemote) {
-            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
-            System.out.println("From client " + "(" + details + "):" + matterStorage.getMatterStored());
+//            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
+//            System.out.println("From client " + "(" + details + "):" + matterStorage.getMatterStored());
             return; // only server-side processing
         } else {
-            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
-            System.out.println("From server " + "(" + details + "):" + matterStorage.getMatterStored());
+//            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
+//            System.out.println("From server " + "(" + details + "):" + matterStorage.getMatterStored());
         }
 
         if(!machineHandler.isBusy()) {

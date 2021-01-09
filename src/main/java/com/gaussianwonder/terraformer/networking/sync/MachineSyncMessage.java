@@ -38,7 +38,6 @@ public class MachineSyncMessage {
     }
 
     public static void handle(MachineSyncMessage msg, Supplier<NetworkEvent.Context> ctx) {
-        System.out.println("I AM GOING TO UPDATE THIS MOTHER FUCKER");
         NetworkEvent.Context context = ctx.get();
         if (!msg.failed) {
             context.enqueueWork(() -> {
@@ -46,7 +45,6 @@ public class MachineSyncMessage {
                 ServerPlayerEntity serverPlayerEntity = context.getSender();
                 if (serverPlayerEntity != null && world != null && world.isBlockPresent(msg.blockPos) && serverPlayerEntity.world != null && serverPlayerEntity.world.isBlockPresent(msg.blockPos)) {
                     // client -> server type of message, everything is safe to be used
-                    System.out.println("PASSED THE FIRST IF");
                     TileEntity serverTileEntity = serverPlayerEntity.world.getTileEntity(msg.blockPos);
                     TileEntity clientTileEntity = world.getTileEntity(msg.blockPos);
                     if (serverTileEntity instanceof MatterRecyclerTile && clientTileEntity instanceof MatterRecyclerTile) {

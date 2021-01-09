@@ -1,12 +1,15 @@
 package com.gaussianwonder.terraformer;
 
 import com.gaussianwonder.terraformer.setup.ClientSetup;
+import com.gaussianwonder.terraformer.setup.Config;
 import com.gaussianwonder.terraformer.setup.ModItems;
 import com.gaussianwonder.terraformer.setup.RegistryHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +33,9 @@ public class TerraformerMod
     private static final Logger LOGGER = LogManager.getLogger();
 
     public TerraformerMod() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
+
         RegistryHandler.register();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::setup);

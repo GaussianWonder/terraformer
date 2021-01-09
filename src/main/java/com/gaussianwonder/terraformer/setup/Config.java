@@ -1,19 +1,27 @@
 package com.gaussianwonder.terraformer.setup;
 
+import com.electronwill.nightconfig.core.file.FileConfig;
 import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Mod.EventBusSubscriber
 public class Config {
+    private static String CONFIG_PATH;
+
     public static class MatterConfig {
         public static class Defaults extends IMatterStorage.Matter {
             Defaults(float solid, float soft, float granular) { super(solid, soft, granular); }
@@ -41,6 +49,8 @@ public class Config {
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     static {
+        CONFIG_PATH = Minecraft.getInstance().gameDir.getAbsolutePath(); //TODO research, no priority here
+
         ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
         ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -119,10 +129,45 @@ public class Config {
     public static void onReload(final ModConfig.Reloading configEvent) {
     }
 
-    private static void setupCustomMatterDictionary(ForgeConfigSpec.Builder SERVER_BUILDER) {
-        //TODO read custom data from the toml file
-        //TODO do shit with this
-        // RegistryObject<Item> ITEM_TO_INSERT_INTO_THE_HASH_MAP = RegistryObject.of(new ResourceLocation("minecraft:bow"), ForgeRegistries.ITEMS);
+    private static void setupCustomMatterDictionary(ForgeConfigSpec.Builder BUILDER) {
+        try {
+            FileConfig config = FileConfig.of(new File(CONFIG_PATH + "/CustomTerraformerDictionary.toml"));
+            config.load();
+            ArrayList<String> itemNames = config.get("item_resources");
+            for (String itemName : itemNames) {
+                String tomlKey = itemName.replaceAll(":", "_").replaceAll("/", "_");
+                RegistryObject<Item> itemRegistry = RegistryObject.of(new ResourceLocation(itemName), ForgeRegistries.ITEMS);
+
+                if(itemRegistry.isPresent()) {
+                    Item item = itemRegistry.get();
+                    ArrayList<Float> defaultConfig = config.get(tomlKey);
+                    if (defaultConfig.size() == 3) {
+                        Float defaultSolid = defaultConfig.get(0);
+                        Float defaultSoft = defaultConfig.get(1);
+                        Float defaultGranular = defaultConfig.get(2);
+                        System.out.println("Registered " + itemName);
+                        addDictionaryFor(BUILDER, item, new MatterConfig.Defaults(
+                                defaultSolid,
+                                defaultSoft,
+                                defaultGranular
+                        ));
+                    }
+                }
+            }
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Something went wrong, full abort");
+        }
+
+//        BUILDER.comment("Something went wrong when reading or parsing the other file")
+//                .comment("Be sure you have privilages to create and edit files"); //TODO make this appear in the toml file if anything went wrong
+//        addDictionaryFor(BUILDER, Items.DEAD_BUSH, new MatterConfig.Defaults(
+//                0.0f,
+//                0.0f,
+//                0.00001f
+//        ));
     }
 
     private static void setupMatterDictionary(ForgeConfigSpec.Builder SERVER_BUILDER) {

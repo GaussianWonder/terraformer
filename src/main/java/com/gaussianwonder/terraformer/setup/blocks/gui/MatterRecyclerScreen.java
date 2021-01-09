@@ -65,7 +65,6 @@ public class MatterRecyclerScreen extends ContainerScreen<MatterRecyclerContaine
 
     @Override
     public void tick() {
-        System.out.println("Tick number: " + currentTick);
         if(currentTick >= refreshRate) {
             currentTick = 0;
             refreshRate = container.refreshRate();

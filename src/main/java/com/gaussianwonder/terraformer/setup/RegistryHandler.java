@@ -10,11 +10,14 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class RegistryHandler {
+    private static String CONFIG_PATH = "."; // this will be overwritten in commonSetup()
+
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, TerraformerMod.MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, TerraformerMod.MOD_ID);
     public static final DeferredRegister<TileEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, TerraformerMod.MOD_ID);
@@ -34,7 +37,8 @@ public class RegistryHandler {
         ModContainers.register();
     }
 
-    public static void commonSetup(final FMLClientSetupEvent event) {
+    //TODO CHANGE THIS TO COMMON, SEE WHAT HAPPENS
+    public static void commonSetup(final FMLCommonSetupEvent event) {
         PacketHandler.registerMessages();
 
         CapabilityMatter.register();
