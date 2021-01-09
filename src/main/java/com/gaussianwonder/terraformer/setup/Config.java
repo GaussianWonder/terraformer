@@ -6,10 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -49,7 +47,7 @@ public class Config {
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     static {
-        CONFIG_PATH = Minecraft.getInstance().gameDir.getAbsolutePath(); //TODO research, no priority here
+        CONFIG_PATH = Minecraft.getInstance().gameDir.getAbsolutePath();
 
         ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
         ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
@@ -67,7 +65,7 @@ public class Config {
         setupMatterDictionary(SERVER_BUILDER);
         SERVER_BUILDER.pop();
 
-        SERVER_BUILDER.comment("Mod Generated Content").push(CATEGORY_MOD_GENERATED);
+        SERVER_BUILDER.comment("Mod Generated Content From other config").push(CATEGORY_MOD_GENERATED);
         setupCustomMatterDictionary(SERVER_BUILDER);
         SERVER_BUILDER.pop();
 
@@ -81,7 +79,11 @@ public class Config {
         // can't make config options for items without resource locations (if that's even a thing)
         // can't make a config option for items without default values
 
-        String itemLocation = rl.toString();
+        addDictionaryFor(BUILDER, rl.toString(), defaults);
+    }
+
+    private static void addDictionaryFor(ForgeConfigSpec.Builder BUILDER, String itemLocation, MatterConfig.Defaults defaults) {
+        if(itemLocation == null || defaults == null) return;
         BUILDER.comment("Settings for " + itemLocation).push(itemLocation);
 
         ForgeConfigSpec.DoubleValue SOLID = BUILDER.comment("Solid Matter returned")
@@ -136,38 +138,21 @@ public class Config {
             ArrayList<String> itemNames = config.get("item_resources");
             for (String itemName : itemNames) {
                 String tomlKey = itemName.replaceAll(":", "_").replaceAll("/", "_");
-                RegistryObject<Item> itemRegistry = RegistryObject.of(new ResourceLocation(itemName), ForgeRegistries.ITEMS);
-
-                if(itemRegistry.isPresent()) {
-                    Item item = itemRegistry.get();
-                    ArrayList<Float> defaultConfig = config.get(tomlKey);
-                    if (defaultConfig.size() == 3) {
-                        Float defaultSolid = defaultConfig.get(0);
-                        Float defaultSoft = defaultConfig.get(1);
-                        Float defaultGranular = defaultConfig.get(2);
-                        System.out.println("Registered " + itemName);
-                        addDictionaryFor(BUILDER, item, new MatterConfig.Defaults(
-                                defaultSolid,
-                                defaultSoft,
-                                defaultGranular
-                        ));
-                    }
+                ArrayList<String> defaultConfig = config.get(tomlKey);
+                if (defaultConfig.size() == 3) {
+                    addDictionaryFor(BUILDER, itemName, new MatterConfig.Defaults(
+                            Float.parseFloat(defaultConfig.get(0)),
+                            Float.parseFloat(defaultConfig.get(1)),
+                            Float.parseFloat(defaultConfig.get(2))
+                    ));
                 }
             }
 
         }
         catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Something went wrong, full abort");
+            System.out.println("Something went completely wrong, abort parsing the custom terraformer dictionary");
         }
-
-//        BUILDER.comment("Something went wrong when reading or parsing the other file")
-//                .comment("Be sure you have privilages to create and edit files"); //TODO make this appear in the toml file if anything went wrong
-//        addDictionaryFor(BUILDER, Items.DEAD_BUSH, new MatterConfig.Defaults(
-//                0.0f,
-//                0.0f,
-//                0.00001f
-//        ));
     }
 
     private static void setupMatterDictionary(ForgeConfigSpec.Builder SERVER_BUILDER) {

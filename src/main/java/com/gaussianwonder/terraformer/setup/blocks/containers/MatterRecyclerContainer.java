@@ -23,7 +23,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-//TODO some sort of dictionary or tool that converts items into a quantity "MATTER" that somehow makes sense and is fair
 public class MatterRecyclerContainer extends Container {
     private TileEntity tileEntity;
     private PlayerEntity playerEntity;

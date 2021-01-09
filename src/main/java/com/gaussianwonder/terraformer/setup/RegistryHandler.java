@@ -37,7 +37,6 @@ public class RegistryHandler {
         ModContainers.register();
     }
 
-    //TODO CHANGE THIS TO COMMON, SEE WHAT HAPPENS
     public static void commonSetup(final FMLCommonSetupEvent event) {
         PacketHandler.registerMessages();
 
