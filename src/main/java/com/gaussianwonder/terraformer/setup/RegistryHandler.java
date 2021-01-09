@@ -32,8 +32,6 @@ public class RegistryHandler {
         ModBlocks.register();
         ModTiles.register();
         ModContainers.register();
-
-        MatterDictionary.register();
     }
 
     public static void commonSetup(final FMLClientSetupEvent event) {

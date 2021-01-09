@@ -11,6 +11,6 @@ public class UpgradeItem extends BaseItem{
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        return 100;
+        return 32; // this is going to trigger people
     }
 }

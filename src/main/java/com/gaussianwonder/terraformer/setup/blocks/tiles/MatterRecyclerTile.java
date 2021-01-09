@@ -1,5 +1,6 @@
 package com.gaussianwonder.terraformer.setup.blocks.tiles;
 
+import com.gaussianwonder.terraformer.setup.Config;
 import com.gaussianwonder.terraformer.setup.ModItems;
 import com.gaussianwonder.terraformer.setup.ModTiles;
 import com.gaussianwonder.terraformer.capabilities.CapabilityMachine;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -48,24 +50,31 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
         }
 
         if(!machineHandler.isBusy()) {
-            ItemStack extracted = itemHandler.extractItem(0, (int) Math.max(1, machineHandler.getInputSupplyFactor()), false);
-            if(!extracted.isEmpty()) {
-                Item item = extracted.getItem();
+            boolean failed = false;
+            ItemStack toBeExtracted = itemHandler.getStackInSlot(0);
+            if(!toBeExtracted.isEmpty()) {
+                Item item = toBeExtracted.getItem();
                 if(item == ModItems.SPEED_UPGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.SPEED, extracted.getCount());
+                    machineHandler.change(IMachineHandler.Target.SPEED, toBeExtracted.getCount());
                 else if(item == ModItems.SPEED_DOWNGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.SPEED, extracted.getCount() * -1);
+                    machineHandler.change(IMachineHandler.Target.SPEED, toBeExtracted.getCount() * -1);
                 else if(item == ModItems.OUTPUT_UPGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.OUTPUT, extracted.getCount());
+                    machineHandler.change(IMachineHandler.Target.OUTPUT, toBeExtracted.getCount());
                 else if(item == ModItems.INPUT_UPGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.INPUT, extracted.getCount());
+                    machineHandler.change(IMachineHandler.Target.INPUT, toBeExtracted.getCount());
                 else {
-//                    matterStorage.receiveMatter(machineHandler.getOutputProductionFactor() * extracted.getCount(), false);
+                    IMatterStorage.Matter matterProperties = Config.getDefaultsFor(item);
+                    if(matterProperties instanceof Config.MatterConfig.Invalid)
+                        failed = true;
+                    matterStorage.receiveMatter(matterProperties.multiply(machineHandler.getOutputProductionFactor()),false);
                 }
             }
 
-            machineHandler.busy();
-            markDirty();
+            if(!failed) {
+                itemHandler.extractItem(0, (int) Math.max(1, machineHandler.getInputSupplyFactor()), false);
+                machineHandler.busy();
+                markDirty();
+            }
         }
 
         machineHandler.tick();
@@ -121,14 +130,18 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return true; // Anything can be inserted into the recycler
+                // Any Recyclable item can be thrown in here
+                //TODO look at crafting recipes as well
+                return Config.exists(stack.getItem());
             }
 
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-//                return stack; // Anything can be inserted into the recycler
-                return super.insertItem(slot, stack, simulate);
+                if(isItemValid(slot, stack))
+                    return super.insertItem(slot, stack, simulate);
+                else
+                    return super.insertItem(slot, stack, true);
             }
         };
     }

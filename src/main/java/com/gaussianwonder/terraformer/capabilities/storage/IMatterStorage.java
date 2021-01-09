@@ -32,7 +32,7 @@ public interface IMatterStorage {
             this.granular = matter.granular;
         }
 
-        float getMatter() {
+        public float getMatter() {
             return this.solid + this.soft + this.granular;
         }
 
@@ -79,6 +79,14 @@ public interface IMatterStorage {
                     m1.solid - m2.solid,
                     m1.soft - m2.soft,
                     m1.granular - m2.granular
+            );
+        }
+
+        public Matter multiply(float multiplicationFactor) {
+            return new Matter(
+                    solid * multiplicationFactor,
+                    soft * multiplicationFactor,
+                    granular * multiplicationFactor
             );
         }
     }

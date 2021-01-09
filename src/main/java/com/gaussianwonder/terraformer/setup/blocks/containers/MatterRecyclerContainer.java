@@ -56,7 +56,7 @@ public class MatterRecyclerContainer extends Container {
     }
 
     public float getMatter() {
-        return tileEntity.getCapability(CapabilityMatter.MATTER).map(IMatterStorage::getMatterStored).orElse(0.0f);
+        return tileEntity.getCapability(CapabilityMatter.MATTER).map(IMatterStorage::getMatterStored).orElse(new IMatterStorage.Matter()).getMatter();
     }
 
     public float getSpeedFactor() {

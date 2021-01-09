@@ -1,21 +1,41 @@
 package com.gaussianwonder.terraformer.setup;
 
-import net.minecraft.block.Blocks;
+import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import java.lang.reflect.Field;
+import java.util.HashMap;
 
 @Mod.EventBusSubscriber
 public class Config {
+    public static class MatterConfig {
+        public static class Defaults extends IMatterStorage.Matter {
+            Defaults(float solid, float soft, float granular) { super(solid, soft, granular); }
+        }
+        public static class Invalid extends Defaults { Invalid(float solid, float soft, float granular) { super(solid, soft, granular); } }
+
+        ForgeConfigSpec.DoubleValue SOLID;
+        ForgeConfigSpec.DoubleValue SOFT;
+        ForgeConfigSpec.DoubleValue GRANULAR;
+
+        MatterConfig(ForgeConfigSpec.DoubleValue solid, ForgeConfigSpec.DoubleValue soft, ForgeConfigSpec.DoubleValue granular) {
+            this.SOLID = solid;
+            this.SOFT = soft;
+            this.GRANULAR = granular;
+        }
+    }
+    public static HashMap<String, MatterConfig> matterDictionary = new HashMap<>();
+
     public static final String CATEGORY_GENERAL = "general";
     public static final String CATEGORY_DICTIONARY = "dictionary";
+    public static final String CATEGORY_CUSTOM_DICTIONARY = "custom_dictionary";
+    public static final String CATEGORY_MOD_GENERATED = "mod_generated";
 
     public static ForgeConfigSpec SERVER_CONFIG;
     public static ForgeConfigSpec CLIENT_CONFIG;
@@ -28,24 +48,67 @@ public class Config {
         // Client config
         CLIENT_BUILDER.pop();
 
+        CLIENT_BUILDER.comment("Custom Dictionary").push(CATEGORY_CUSTOM_DICTIONARY);
+        // Don't touch this, it is only for the player to customize
+        CLIENT_BUILDER.pop();
+
         SERVER_BUILDER.comment("Matter Dictionary").push(CATEGORY_DICTIONARY);
         // Server config
-        setupMatterDictionary(SERVER_BUILDER, CLIENT_BUILDER);
+        setupMatterDictionary(SERVER_BUILDER);
         SERVER_BUILDER.pop();
 
+        SERVER_BUILDER.comment("Mod Generated Content").push(CATEGORY_MOD_GENERATED);
+        setupCustomMatterDictionary(SERVER_BUILDER);
+        SERVER_BUILDER.pop();
 
         SERVER_CONFIG = SERVER_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
-    private static void setupMatterDictionary(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+    private static void addDictionaryFor(ForgeConfigSpec.Builder BUILDER, Item item, MatterConfig.Defaults defaults) {
+        ResourceLocation rl = ForgeRegistries.ITEMS.getKey(item);
+        if(rl == null || defaults == null) return;
+        // can't make config options for items without resource locations (if that's even a thing)
+        // can't make a config option for items without default values
+
+        String itemLocation = rl.toString();
+        BUILDER.comment("Settings for " + itemLocation).push(itemLocation);
+
+        ForgeConfigSpec.DoubleValue SOLID = BUILDER.comment("Solid Matter returned")
+                .defineInRange("solid_matter", defaults.solid, 0, Float.MAX_VALUE);
+
+        ForgeConfigSpec.DoubleValue SOFT = BUILDER.comment("Soft Matter returned")
+                .defineInRange("soft_matter", defaults.soft, 0, Float.MAX_VALUE);
+
+        ForgeConfigSpec.DoubleValue GRANULAR = BUILDER.comment("Granular Matter returned")
+                .defineInRange("granular_matter", defaults.granular, 0, Float.MAX_VALUE);
+
+        matterDictionary.put(itemLocation, new MatterConfig(
+                SOLID,
+                SOFT,
+                GRANULAR
+        ));
+
+        BUILDER.pop();
     }
 
+    public static MatterConfig.Defaults getDefaultsFor(Item item) {
+        ResourceLocation rl = ForgeRegistries.ITEMS.getKey(item);
+        if(rl == null) return new MatterConfig.Invalid(0.0f,0.0f,0.0f);
+        MatterConfig defaults = matterDictionary.get(rl.toString());
 
-    private static void addDictionaryFor(ForgeConfigSpec.Builder BUILDER, Item item) {
-//        ItemStack sads = new ItemStack(Blocks.IRON_BLOCK, 126);
-//        sads.setCount();
-//        BUILDER.comment(item.)
+        return new MatterConfig.Defaults(
+                defaults.SOLID.get().floatValue(),
+                defaults.SOFT.get().floatValue(),
+                defaults.GRANULAR.get().floatValue()
+        );
+    }
+
+    //TODO make a version to check CRAFTING RECIPES as well, maybe an IRecyclable + Recyclable + CapabilityRecyclable
+    public static boolean exists(Item item) {
+        ResourceLocation rl = ForgeRegistries.ITEMS.getKey(item);
+        if(rl == null) return false;
+        return matterDictionary.get(rl.toString()) != null;
     }
 
     @SubscribeEvent
@@ -54,5 +117,64 @@ public class Config {
 
     @SubscribeEvent
     public static void onReload(final ModConfig.Reloading configEvent) {
+    }
+
+    private static void setupCustomMatterDictionary(ForgeConfigSpec.Builder SERVER_BUILDER) {
+        //TODO read custom data from the toml file
+        //TODO do shit with this
+        // RegistryObject<Item> ITEM_TO_INSERT_INTO_THE_HASH_MAP = RegistryObject.of(new ResourceLocation("minecraft:bow"), ForgeRegistries.ITEMS);
+    }
+
+    private static void setupMatterDictionary(ForgeConfigSpec.Builder SERVER_BUILDER) {
+        // SOLID
+        addDictionaryFor(SERVER_BUILDER, Items.STONE, new MatterConfig.Defaults(
+                1.0f,
+                0.0f,
+                0.0f
+        ));
+        addDictionaryFor(SERVER_BUILDER, Items.GRANITE, new MatterConfig.Defaults(
+                1.5f,
+                0.0f,
+                0.0f
+        ));
+        addDictionaryFor(SERVER_BUILDER, Items.DIORITE, new MatterConfig.Defaults(
+                1.5f,
+                0.0f,
+                0.0f
+        ));
+        addDictionaryFor(SERVER_BUILDER, Items.ANDESITE, new MatterConfig.Defaults(
+                1.5f,
+                0.0f,
+                0.0f
+        ));
+        addDictionaryFor(SERVER_BUILDER, Items.COBBLESTONE, new MatterConfig.Defaults(
+                0.8f,
+                0.0f,
+                0.1f
+        ));
+
+        // SOFT
+        addDictionaryFor(SERVER_BUILDER, Items.CLAY, new MatterConfig.Defaults(
+                0.0f,
+                1.0f,
+                0.0f
+        ));
+        addDictionaryFor(SERVER_BUILDER, Items.GRAVEL, new MatterConfig.Defaults(
+                0.1f,
+                0.1f,
+                0.8f
+        ));
+
+        // GRANULAR
+        addDictionaryFor(SERVER_BUILDER, Items.SAND, new MatterConfig.Defaults(
+                0.0f,
+                0.0f,
+                1.0f
+        ));
+        addDictionaryFor(SERVER_BUILDER, Items.RED_SAND, new MatterConfig.Defaults(
+                0.0f,
+                0.1f,
+                0.8f
+        ));
     }
 }
