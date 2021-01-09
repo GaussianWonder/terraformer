@@ -50,29 +50,6 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
         } else {
 //            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
 //            System.out.println("From server " + "(" + details + "):" + matterStorage.getMatterStored());
-
-
-
-//            RegistryObject<Item> itemRegistry1 = RegistryObject.of(new ResourceLocation("terraformer:item/terraform_rod"), ForgeRegistries.ITEMS);
-//            RegistryObject<Item> itemRegistry2 = RegistryObject.of(new ResourceLocation("terraformer:items/terraform_rod"), ForgeRegistries.ITEMS);
-//            RegistryObject<Item> itemRegistry3 = RegistryObject.of(new ResourceLocation("terraformer:terraform_rod"), ForgeRegistries.ITEMS);
-//            for(ResourceLocation location: ForgeRegistries.ITEMS.getKeys()) {
-//                System.out.println(location.toString());
-//            }
-//            System.out.println(
-//                    "terraformer:item/terraform_rod " + (itemRegistry1.isPresent() ? "PRESENT" : "NOT PRESENT")
-//            );
-//            System.out.println(
-//                    "terraformer:items/terraform_rod " + (itemRegistry2.isPresent() ? "PRESENT" : "NOT PRESENT")
-//            );
-//            System.out.println(
-//                    "terraformer:item/terraform_rod " + (itemRegistry3.isPresent() ? "PRESENT" : "NOT PRESENT")
-//            );
-//
-//            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("terraformer:terraform_rod"));
-//            System.out.println(
-//                    "This item seems to be" + ((item == null) ? "NULL :(" : "NOT NULL YAAAY")
-//            );
         }
 
         if(!machineHandler.isBusy()) {
