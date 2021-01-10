@@ -18,7 +18,8 @@ import java.util.HashMap;
 
 @Mod.EventBusSubscriber
 public class Config {
-    private static String CONFIG_PATH;
+    private static boolean isDataGenerator = false;
+    private static String CONFIG_PATH = null;
 
     public static class MatterConfig {
         public static class Defaults extends IMatterStorage.Matter {
@@ -47,31 +48,38 @@ public class Config {
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     static {
-        CONFIG_PATH = Minecraft.getInstance().gameDir.getAbsolutePath();
+        try {
+            CONFIG_PATH = Minecraft.getInstance().gameDir.getAbsolutePath();
+        }
+        catch (Exception e) {
+            isDataGenerator = true;
+        }
 
-        ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
-        ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
+        if(!isDataGenerator) {
+            ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
+            ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
-        CLIENT_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
-        // Client config
-        CLIENT_BUILDER.pop();
+            CLIENT_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
+            // Client config
+            CLIENT_BUILDER.pop();
 
-        CLIENT_BUILDER.comment("Custom Dictionary").push(CATEGORY_CUSTOM_DICTIONARY);
-        // Don't touch this, it is only for the player to customize
-        CLIENT_BUILDER.pop();
+            CLIENT_BUILDER.comment("Custom Dictionary").push(CATEGORY_CUSTOM_DICTIONARY);
+            // Don't touch this, it is only for the player to customize
+            CLIENT_BUILDER.pop();
 
-        SERVER_BUILDER.comment("Matter Dictionary").push(CATEGORY_DICTIONARY);
-        // Server config
-        setupMatterDictionary(SERVER_BUILDER);
-        SERVER_BUILDER.pop();
+            SERVER_BUILDER.comment("Matter Dictionary").push(CATEGORY_DICTIONARY);
+            // Server config
+            setupMatterDictionary(SERVER_BUILDER);
+            SERVER_BUILDER.pop();
 
-        SERVER_BUILDER.comment("Mod Generated Content From other config").push(CATEGORY_MOD_GENERATED);
-        setupCustomMatterDictionary(SERVER_BUILDER);
-        setupRecipeMatterDictionary(SERVER_BUILDER);
-        SERVER_BUILDER.pop();
+            SERVER_BUILDER.comment("Mod Generated Content From other config").push(CATEGORY_MOD_GENERATED);
+            setupCustomMatterDictionary(SERVER_BUILDER);
+            setupRecipeMatterDictionary(SERVER_BUILDER);
+            SERVER_BUILDER.pop();
 
-        SERVER_CONFIG = SERVER_BUILDER.build();
-        CLIENT_CONFIG = CLIENT_BUILDER.build();
+            SERVER_CONFIG = SERVER_BUILDER.build();
+            CLIENT_CONFIG = CLIENT_BUILDER.build();
+        }
     }
 
     private static void addDictionaryFor(ForgeConfigSpec.Builder BUILDER, Item item, MatterConfig.Defaults defaults) {

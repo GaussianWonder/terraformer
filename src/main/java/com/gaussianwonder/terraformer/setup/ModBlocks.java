@@ -1,9 +1,10 @@
 package com.gaussianwonder.terraformer.setup;
 
-import com.gaussianwonder.terraformer.setup.block_items.MatterFuserBlockItem;
-import com.gaussianwonder.terraformer.setup.block_items.MatterRecyclerBlockItem;
+import com.gaussianwonder.terraformer.setup.block_items.BaseBlockItem;
 import com.gaussianwonder.terraformer.setup.blocks.MatterFuserBlock;
 import com.gaussianwonder.terraformer.setup.blocks.MatterRecyclerBlock;
+import com.gaussianwonder.terraformer.setup.blocks.MatterStorageBlock;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 
 public class ModBlocks {
@@ -16,15 +17,23 @@ public class ModBlocks {
             "matter_fuser",
             MatterFuserBlock::new
     );
+    public static final RegistryObject<MatterStorageBlock> MATTER_STORAGE = RegistryHandler.BLOCKS.register(
+            "matter_storage",
+            MatterStorageBlock::new
+    );
 
     // Block Items
-    public static final RegistryObject<MatterRecyclerBlockItem> MATTER_RECYCLER_ITEM = RegistryHandler.ITEMS.register(
+    public static final RegistryObject<BaseBlockItem> MATTER_RECYCLER_ITEM = RegistryHandler.ITEMS.register(
             "matter_recycler",
-            MatterRecyclerBlockItem::new
+            () -> new BaseBlockItem(MATTER_RECYCLER.get(), new Item.Properties().maxStackSize(1))
     );
-    public static final RegistryObject<MatterFuserBlockItem> MATTER_FUSER_ITEM = RegistryHandler.ITEMS.register(
+    public static final RegistryObject<BaseBlockItem> MATTER_FUSER_ITEM = RegistryHandler.ITEMS.register(
             "matter_fuser",
-            MatterFuserBlockItem::new
+            () -> new BaseBlockItem(MATTER_FUSER.get(), new Item.Properties().maxStackSize(1))
+    );
+    public static final RegistryObject<BaseBlockItem> MATTER_STORAGE_ITEM = RegistryHandler.ITEMS.register(
+            "matter_storage",
+            () -> new BaseBlockItem(MATTER_STORAGE.get(), new Item.Properties().maxStackSize(1))
     );
 
     static void register() { }

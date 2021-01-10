@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "terraformer:matter_recycler"
+    "terraformer:matter_recycler",
+    "terraformer:matter_fuser",
+    "terraformer:matter_storage"
   ]
 }

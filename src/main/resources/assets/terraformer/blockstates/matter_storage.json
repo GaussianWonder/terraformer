@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=down,attached=false": {
+      "model": "terraformer:block/matter_storage",
+      "x": 90
+    },
+    "facing=up,attached=false": {
+      "model": "terraformer:block/matter_storage",
+      "x": -90
+    },
+    "facing=north,attached=false": {
+      "model": "terraformer:block/matter_storage"
+    },
+    "facing=south,attached=false": {
+      "model": "terraformer:block/matter_storage",
+      "y": 180
+    },
+    "facing=west,attached=false": {
+      "model": "terraformer:block/matter_storage",
+      "y": 270
+    },
+    "facing=east,attached=false": {
+      "model": "terraformer:block/matter_storage",
+      "y": 90
+    },
+    "facing=down,attached=true": {
+      "model": "terraformer:block/matter_storage_connected",
+      "x": 90
+    },
+    "facing=up,attached=true": {
+      "model": "terraformer:block/matter_storage_connected",
+      "x": -90
+    },
+    "facing=north,attached=true": {
+      "model": "terraformer:block/matter_storage_connected"
+    },
+    "facing=south,attached=true": {
+      "model": "terraformer:block/matter_storage_connected",
+      "y": 180
+    },
+    "facing=west,attached=true": {
+      "model": "terraformer:block/matter_storage_connected",
+      "y": 270
+    },
+    "facing=east,attached=true": {
+      "model": "terraformer:block/matter_storage_connected",
+      "y": 90
+    }
+  }
+}
