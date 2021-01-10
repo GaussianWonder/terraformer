@@ -11,5 +11,6 @@ public class LootTables extends BaseLootTableProvider {
     @Override
     protected void addTables() {
         addStandardTable(ModBlocks.MATTER_RECYCLER.get());
+        addStandardTable(ModBlocks.MATTER_FUSER.get());
     }
 }

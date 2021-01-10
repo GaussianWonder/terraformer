@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "terraformer:block/matter_fuser" },
+    "facing=south": { "model": "terraformer:block/matter_fuser", "y":  180 },
+    "facing=west": { "model": "terraformer:block/matter_fuser", "y":  270 },
+    "facing=east": { "model": "terraformer:block/matter_fuser", "y":  90 }
+  }
+}

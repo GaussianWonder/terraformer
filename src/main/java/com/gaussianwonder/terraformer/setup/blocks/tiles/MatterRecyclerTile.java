@@ -9,22 +9,21 @@ import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
 import com.gaussianwonder.terraformer.capabilities.handler.MachineHandler;
 import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
 import com.gaussianwonder.terraformer.capabilities.storage.MatterStorage;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
 
 import javax.annotation.Nonnull;
 
@@ -81,6 +80,15 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
         }
 
         machineHandler.tick();
+    }
+
+    public void checkNeighbors() {
+        BlockPos top = new BlockPos(this.pos.getX(), this.pos.getY() + 1, this.pos.getZ());
+        if(this.world != null && this.world.isBlockPresent(top)) {
+            Block topBlock = this.world.getBlockState(top).getBlock();
+            if(topBlock != Blocks.HOPPER)
+                this.world.destroyBlock(top, true);
+        }
     }
 
     @Override

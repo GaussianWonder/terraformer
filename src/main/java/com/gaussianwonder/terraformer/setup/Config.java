@@ -67,6 +67,7 @@ public class Config {
 
         SERVER_BUILDER.comment("Mod Generated Content From other config").push(CATEGORY_MOD_GENERATED);
         setupCustomMatterDictionary(SERVER_BUILDER);
+        setupRecipeMatterDictionary(SERVER_BUILDER);
         SERVER_BUILDER.pop();
 
         SERVER_CONFIG = SERVER_BUILDER.build();
@@ -116,7 +117,6 @@ public class Config {
         );
     }
 
-    //TODO make a version to check CRAFTING RECIPES as well, maybe an IRecyclable + Recyclable + CapabilityRecyclable
     public static boolean exists(Item item) {
         ResourceLocation rl = ForgeRegistries.ITEMS.getKey(item);
         if(rl == null) return false;
@@ -155,53 +155,66 @@ public class Config {
         }
     }
 
-    private static void setupMatterDictionary(ForgeConfigSpec.Builder SERVER_BUILDER) {
+    private static void setupRecipeMatterDictionary(ForgeConfigSpec.Builder BUILDER) {
+//        for(Map.Entry<RegistryKey<IRecipeSerializer<?>>, IRecipeSerializer<?>> entry: ForgeRegistries.RECIPE_SERIALIZERS.getEntries()) {
+//            RegistryKey<IRecipeSerializer<?>> key = entry.getKey();
+//            IRecipeSerializer<?> value = entry.getValue();
+//
+//            System.out.println("Key Location: " + key.getLocation());
+//            System.out.println("Key Registry Name: " + key.getRegistryName());
+//
+//            System.out.println("Value Registry Name: " + value.getRegistryName());
+//        }
+
+    }
+
+    private static void setupMatterDictionary(ForgeConfigSpec.Builder BUILDER) {
         // SOLID
-        addDictionaryFor(SERVER_BUILDER, Items.STONE, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.STONE, new MatterConfig.Defaults(
                 1.0f,
                 0.0f,
                 0.0f
         ));
-        addDictionaryFor(SERVER_BUILDER, Items.GRANITE, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.GRANITE, new MatterConfig.Defaults(
                 1.5f,
                 0.0f,
                 0.0f
         ));
-        addDictionaryFor(SERVER_BUILDER, Items.DIORITE, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.DIORITE, new MatterConfig.Defaults(
                 1.5f,
                 0.0f,
                 0.0f
         ));
-        addDictionaryFor(SERVER_BUILDER, Items.ANDESITE, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.ANDESITE, new MatterConfig.Defaults(
                 1.5f,
                 0.0f,
                 0.0f
         ));
-        addDictionaryFor(SERVER_BUILDER, Items.COBBLESTONE, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.COBBLESTONE, new MatterConfig.Defaults(
                 0.8f,
                 0.0f,
                 0.1f
         ));
 
         // SOFT
-        addDictionaryFor(SERVER_BUILDER, Items.CLAY, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.CLAY, new MatterConfig.Defaults(
                 0.0f,
                 1.0f,
                 0.0f
         ));
-        addDictionaryFor(SERVER_BUILDER, Items.GRAVEL, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.GRAVEL, new MatterConfig.Defaults(
                 0.1f,
                 0.1f,
                 0.8f
         ));
 
         // GRANULAR
-        addDictionaryFor(SERVER_BUILDER, Items.SAND, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.SAND, new MatterConfig.Defaults(
                 0.0f,
                 0.0f,
                 1.0f
         ));
-        addDictionaryFor(SERVER_BUILDER, Items.RED_SAND, new MatterConfig.Defaults(
+        addDictionaryFor(BUILDER, Items.RED_SAND, new MatterConfig.Defaults(
                 0.0f,
                 0.1f,
                 0.8f

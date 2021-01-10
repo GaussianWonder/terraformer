@@ -10,7 +10,7 @@ public class BaseBlock extends Block {
         super(properties); // I couldn't think of any default property yet
     }
 
-    public String getName() {
+    public static String getName() {
         return name;
     }
 }

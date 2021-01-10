@@ -55,6 +55,16 @@ public class MatterRecyclerBlock extends BaseBlock {
 
     @SuppressWarnings("deprecation")
     @Override
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        if(!worldIn.isRemote && worldIn.isBlockPresent(pos)) {
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if(tileEntity instanceof MatterRecyclerTile)
+                ((MatterRecyclerTile) tileEntity).checkNeighbors();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
     public ActionResultType onBlockActivated(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
