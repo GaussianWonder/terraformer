@@ -1,11 +1,10 @@
 package com.gaussianwonder.terraformer.setup.blocks;
 
 import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTile;
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterStorageTile;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.loot.conditions.BlockStateProperty;
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -19,7 +18,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
@@ -48,6 +46,18 @@ public class MatterStorageBlock extends BaseBlock {
 //    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
 //        return null;
 //    }
+
+    // Tile Related Methods Override
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new MatterStorageTile();
+    }
 
     // Model Related Methods Override
     @SuppressWarnings("deprecation")
@@ -101,11 +111,12 @@ public class MatterStorageBlock extends BaseBlock {
         BlockPos top = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
         if(worldIn.isBlockPresent(top)) {
             TileEntity tileEntity = worldIn.getTileEntity(top);
+
             worldIn.setBlockState(
                     pos,
                     this.getDefaultState()
                             .with(FACING, state.get(FACING))
-                            .with(BlockStateProperties.ATTACHED, tileEntity instanceof MatterRecyclerTile ? true : false),
+                            .with(BlockStateProperties.ATTACHED, tileEntity instanceof MatterRecyclerTile || worldIn.getBlockState(top).getBlock() instanceof MatterFuserBlock),
                     1 | 2
             );
         }

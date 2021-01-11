@@ -1,6 +1,7 @@
 package com.gaussianwonder.terraformer.networking.sync;
 
 import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTile;
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterStorageTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -48,9 +49,13 @@ public class MachineSyncMessage {
                     TileEntity serverTileEntity = serverPlayerEntity.world.getTileEntity(msg.blockPos);
                     TileEntity clientTileEntity = world.getTileEntity(msg.blockPos);
                     if (serverTileEntity instanceof MatterRecyclerTile && clientTileEntity instanceof MatterRecyclerTile) {
-//                        System.out.println(((MatterRecyclerTile) clientTileEntity).getCurrentMachine().getSpeedProductionFactor() + " - " + ((MatterRecyclerTile) serverTileEntity).getCurrentMachine().getSpeedProductionFactor() );
                         ((MatterRecyclerTile) clientTileEntity).updateClient(
                                 ((MatterRecyclerTile) serverTileEntity).getCurrentMachine()
+                        );
+                    }
+                    else if (serverTileEntity instanceof MatterStorageTile && clientTileEntity instanceof MatterStorageTile) {
+                        ((MatterStorageTile) clientTileEntity).updateClient(
+                                ((MatterStorageTile) serverTileEntity).getCurrentMachine()
                         );
                     }
                 }

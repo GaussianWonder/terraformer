@@ -9,6 +9,8 @@ import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
 import com.gaussianwonder.terraformer.capabilities.handler.MachineHandler;
 import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
 import com.gaussianwonder.terraformer.capabilities.storage.MatterStorage;
+import com.gaussianwonder.terraformer.setup.items.UpgradeItem;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -43,12 +45,7 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
     @Override
     public void tick() {
         if(world.isRemote) {
-//            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
-//            System.out.println("From client " + "(" + details + "):" + matterStorage.getMatterStored());
             return; // only server-side processing
-        } else {
-//            String details = machineHandler.getSpeedProductionFactor() + " " + machineHandler.getOutputProductionFactor() + " " + machineHandler.getInputSupplyFactor();
-//            System.out.println("From server " + "(" + details + "):" + matterStorage.getMatterStored());
         }
 
         if(!machineHandler.isBusy()) {
@@ -56,30 +53,78 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
             ItemStack toBeExtracted = itemHandler.getStackInSlot(0);
             if(!toBeExtracted.isEmpty()) {
                 Item item = toBeExtracted.getItem();
+                int maxExtractCount = (int) Math.min(toBeExtracted.getCount(), machineHandler.getInputSupplyFactor());
+
                 if(item == ModItems.SPEED_UPGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.SPEED, toBeExtracted.getCount());
+                    machineHandler.change(IMachineHandler.Target.SPEED, maxExtractCount);
                 else if(item == ModItems.SPEED_DOWNGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.SPEED, toBeExtracted.getCount() * -1);
+                    machineHandler.change(IMachineHandler.Target.SPEED, maxExtractCount * -1);
                 else if(item == ModItems.OUTPUT_UPGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.OUTPUT, toBeExtracted.getCount());
+                    machineHandler.change(IMachineHandler.Target.OUTPUT, maxExtractCount);
                 else if(item == ModItems.INPUT_UPGRADE.get())
-                    machineHandler.change(IMachineHandler.Target.INPUT, toBeExtracted.getCount());
+                    machineHandler.change(IMachineHandler.Target.INPUT, maxExtractCount);
                 else {
                     IMatterStorage.Matter matterProperties = Config.getDefaultsFor(item);
                     if(matterProperties instanceof Config.MatterConfig.Invalid)
                         failed = true;
-                    matterStorage.receiveMatter(matterProperties.multiply(machineHandler.getOutputProductionFactor()),false);
+                    matterStorage.receiveMatter(matterProperties.multiply(machineHandler.getOutputProductionFactor() * maxExtractCount),false);
                 }
             }
 
             if(!failed) {
-                itemHandler.extractItem(0, (int) Math.max(1, machineHandler.getInputSupplyFactor()), false);
+                itemHandler.extractItem(0, (int) Math.max(1, (int) Math.min(toBeExtracted.getCount(), machineHandler.getInputSupplyFactor())), false);
                 machineHandler.busy();
                 markDirty();
             }
         }
 
         machineHandler.tick();
+        sendOutMatter();
+    }
+
+    private void sendOutMatter() {
+        IMatterStorage.Matter capacity = matterStorage.getMatterStored();
+        if(matterStorage.canExtract() && capacity.getMatter() > 0) {
+            AtomicDouble solidCapacity = new AtomicDouble(capacity.solid);
+            AtomicDouble softCapacity = new AtomicDouble(capacity.soft);
+            AtomicDouble granularCapacity = new AtomicDouble(capacity.granular);
+
+            Direction direction = Direction.DOWN;
+            TileEntity tile = world.getTileEntity(pos.offset(direction));
+            if(tile != null) {
+                boolean canContinue = tile.getCapability(CapabilityMatter.MATTER, direction).map(handler -> {
+                    if(handler.canReceive()) {
+                        IMatterStorage.Matter received = handler.receiveMatter(
+                                IMatterStorage.Matter.capByCapacity(
+                                        new IMatterStorage.Matter(
+                                                solidCapacity.floatValue(),
+                                                softCapacity.floatValue(),
+                                                granularCapacity.floatValue()
+                                        ),
+                                        matterStorage.getMaxExtract()
+                                ),
+                                false
+                        );
+
+                        if(received.getMatter() > 0.0f) {
+                            solidCapacity.addAndGet(-received.solid);
+                            softCapacity.addAndGet(-received.soft);
+                            granularCapacity.addAndGet(-received.granular);
+
+                            matterStorage.extractMatter(received, false);
+                            markDirty();
+
+                            return solidCapacity.get() + softCapacity.get() + granularCapacity.get() > 0.0f;
+                        }
+                        return true;
+                    }
+                    return true;
+                }).orElse(true);
+
+                if(!canContinue)
+                    return;
+            }
+        }
     }
 
     public void checkNeighbors() {
@@ -143,7 +188,7 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 // Any Recyclable item can be thrown in here
                 //TODO look at crafting recipes as well
-                return Config.exists(stack.getItem());
+                return Config.exists(stack.getItem()) || stack.getItem() instanceof UpgradeItem;
             }
 
             @Nonnull
@@ -158,7 +203,7 @@ public class MatterRecyclerTile extends TileEntity implements ITickableTileEntit
     }
 
     private MatterStorage createMatter() {
-        return new MatterStorage(1000000.0f, 100.0f) {
+        return new MatterStorage(1000.0f, 25.0f) {
             @Override
             public void onMatterChange() {
                 markDirty();
