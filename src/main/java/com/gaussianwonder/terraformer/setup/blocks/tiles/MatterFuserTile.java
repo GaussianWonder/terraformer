@@ -35,7 +35,7 @@ public class MatterFuserTile extends TileEntity implements ITickableTileEntity {
 //            System.out.println("From client " + "(" + details + "):" + matterStorage.getMatterStored());
             return; // only server-side processing
         } else {
-            System.out.println("From server: " + matterStorage.getMatterStored().getMatter());
+            System.out.println("From server from fuser: " + matterStorage.getMatterStored().getMatter());
         }
     }
 
@@ -73,7 +73,7 @@ public class MatterFuserTile extends TileEntity implements ITickableTileEntity {
     }
 
     private MatterStorage createMatter() {
-        return new MatterStorage(10000.0f, 50.0f) {
+        return new MatterStorage(5000.0f, 50.0f) {
             @Override
             public void onMatterChange() {
                 markDirty();

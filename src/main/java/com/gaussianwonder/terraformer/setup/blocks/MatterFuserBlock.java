@@ -1,10 +1,17 @@
 package com.gaussianwonder.terraformer.setup.blocks;
 
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterFuserTile;
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTile;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -17,6 +24,8 @@ import net.minecraft.world.IWorld;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class MatterFuserBlock extends BaseBlock {
@@ -34,6 +43,39 @@ public class MatterFuserBlock extends BaseBlock {
                 .harvestTool(ToolType.PICKAXE)
                 .harvestLevel(2)
                 .setRequiresTool());
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        TileEntity tileEntity = builder.get(LootParameters.BLOCK_ENTITY);
+        if(tileEntity instanceof MatterFuserTile) {
+            final List<ItemStack> drops = new ArrayList<>();
+            ItemStack stack = new ItemStack(this);
+
+            CompoundNBT tag = new CompoundNBT();
+            ((MatterFuserTile)tileEntity).write(tag);
+
+            stack.setTagInfo("BlockEntityTag", tag);
+            drops.add(stack);
+
+            return drops;
+        }
+        else {
+            return super.getDrops(state, builder);
+        }
+    }
+
+    // Tile Related Methods Override
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new MatterFuserTile();
     }
 
     // Model Related Methods Override

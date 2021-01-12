@@ -5,6 +5,10 @@ import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterStorageTile;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -22,6 +26,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class MatterStorageBlock extends BaseBlock {
@@ -39,6 +45,27 @@ public class MatterStorageBlock extends BaseBlock {
                 .harvestTool(ToolType.PICKAXE)
                 .harvestLevel(2)
                 .setRequiresTool());
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        TileEntity tileEntity = builder.get(LootParameters.BLOCK_ENTITY);
+        if(tileEntity instanceof MatterStorageTile) {
+            final List<ItemStack> drops = new ArrayList<>();
+            ItemStack stack = new ItemStack(this);
+
+            CompoundNBT tag = new CompoundNBT();
+            ((MatterStorageTile)tileEntity).write(tag);
+
+            stack.setTagInfo("BlockEntityTag", tag);
+            drops.add(stack);
+
+            return drops;
+        }
+        else {
+            return super.getDrops(state, builder);
+        }
     }
 
 //TODO Creative middle button click copy - check NBT tags
