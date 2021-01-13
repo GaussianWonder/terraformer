@@ -1,5 +1,6 @@
 package com.gaussianwonder.terraformer.networking.sync;
 
+import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterFuserTile;
 import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterRecyclerTile;
 import com.gaussianwonder.terraformer.setup.blocks.tiles.MatterStorageTile;
 import net.minecraft.client.Minecraft;
@@ -53,9 +54,14 @@ public class MachineSyncMessage {
                                 ((MatterRecyclerTile) serverTileEntity).getCurrentMachine()
                         );
                     }
-                    else if (serverTileEntity instanceof MatterStorageTile && clientTileEntity instanceof MatterStorageTile) {
+                    if (serverTileEntity instanceof MatterStorageTile && clientTileEntity instanceof MatterStorageTile) {
                         ((MatterStorageTile) clientTileEntity).updateClient(
                                 ((MatterStorageTile) serverTileEntity).getCurrentMachine()
+                        );
+                    }
+                    if (serverTileEntity instanceof MatterFuserTile && clientTileEntity instanceof MatterFuserTile) {
+                        ((MatterFuserTile) clientTileEntity).updateClient(
+                                ((MatterFuserTile) serverTileEntity).getCurrentMachine()
                         );
                     }
                 }

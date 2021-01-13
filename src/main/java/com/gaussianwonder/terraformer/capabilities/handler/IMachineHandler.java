@@ -116,4 +116,5 @@ public interface IMachineHandler {
     float getSpeedProductionFactor();
 
     int getCooldown();
+    float getPercentageCompleted(); // between 1 and 0
 }

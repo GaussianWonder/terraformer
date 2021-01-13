@@ -196,6 +196,15 @@ public class MachineHandler implements IMachineHandler, INBTSerializable<Compoun
         return cooldown;
     }
 
+    @Override
+    public float getPercentageCompleted() {
+        return (float)(cooldown) / maxCooldown;
+    }
+
+    public int getMaxCooldown() {
+        return maxCooldown;
+    }
+
     public Stats getBaseStats() {
         return this.baseStats;
     }

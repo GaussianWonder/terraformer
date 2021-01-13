@@ -1,6 +1,7 @@
 package com.gaussianwonder.terraformer.setup;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
+import com.gaussianwonder.terraformer.setup.blocks.gui.MatterFuserScreen;
 import com.gaussianwonder.terraformer.setup.blocks.gui.MatterRecyclerScreen;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,5 +17,6 @@ public class ClientSetup {
 
     private static void linkScreensToContainers() {
         ScreenManager.registerFactory(ModContainers.MATTER_RECYCLER_CONTAINER.get(), MatterRecyclerScreen::new);
+        ScreenManager.registerFactory(ModContainers.MATTER_FUSER_CONTAINER.get(), MatterFuserScreen::new);
     }
 }

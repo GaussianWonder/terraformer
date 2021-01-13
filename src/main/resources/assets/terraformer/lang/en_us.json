@@ -12,6 +12,7 @@
   "block.terraformer.matter_storage": "Matter Storage",
 
   "screen.terraformer.matter_recycler": "Matter Recycler",
+  "screen.terraformer.matter_fuser": "Matter Fuser",
 
   "itemGroup.terraformerGroup": "Terraformer"
 }

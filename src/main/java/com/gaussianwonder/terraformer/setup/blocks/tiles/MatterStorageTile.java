@@ -7,6 +7,7 @@ import com.gaussianwonder.terraformer.capabilities.handler.MachineHandler;
 import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
 import com.gaussianwonder.terraformer.capabilities.storage.MatterStorage;
 import com.gaussianwonder.terraformer.setup.ModTiles;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -37,6 +38,8 @@ public class MatterStorageTile extends TileEntity implements ITickableTileEntity
         } else {
             System.out.println("From server: " + matterStorage.getMatterStored().getMatter());
         }
+        
+        sendOutMatter();
     }
 
     @Override
@@ -99,6 +102,52 @@ public class MatterStorageTile extends TileEntity implements ITickableTileEntity
                 markDirty();
             }
         };
+    }
+
+    private void sendOutMatter() {
+        IMatterStorage.Matter capacity = matterStorage.getMatterStored();
+        if(matterStorage.canExtract() && capacity.getMatter() > 0) {
+            AtomicDouble solidCapacity = new AtomicDouble(capacity.solid);
+            AtomicDouble softCapacity = new AtomicDouble(capacity.soft);
+            AtomicDouble granularCapacity = new AtomicDouble(capacity.granular);
+
+            for(Direction direction : Direction.values()) {
+                TileEntity tile = world.getTileEntity(pos.offset(direction));
+                if (tile != null) {
+                    boolean canContinue = tile.getCapability(CapabilityMatter.MATTER, direction).map(handler -> {
+                        if (handler.canReceive()) {
+                            IMatterStorage.Matter received = handler.receiveMatter(
+                                    IMatterStorage.Matter.capByCapacity(
+                                            new IMatterStorage.Matter(
+                                                    solidCapacity.floatValue(),
+                                                    softCapacity.floatValue(),
+                                                    granularCapacity.floatValue()
+                                            ),
+                                            matterStorage.getMaxExtract()
+                                    ),
+                                    false
+                            );
+
+                            if (received.getMatter() > 0.0f) {
+                                solidCapacity.addAndGet(-received.solid);
+                                softCapacity.addAndGet(-received.soft);
+                                granularCapacity.addAndGet(-received.granular);
+
+                                matterStorage.extractMatter(received, false);
+                                markDirty();
+
+                                return solidCapacity.get() + softCapacity.get() + granularCapacity.get() > 0.0f;
+                            }
+                            return true;
+                        }
+                        return true;
+                    }).orElse(true);
+
+                    if (!canContinue)
+                        return;
+                }
+            }
+        }
     }
 
     public void updateClient(MatterStorage updatedMatterStorage) {
