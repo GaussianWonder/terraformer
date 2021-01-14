@@ -1,6 +1,6 @@
 package com.gaussianwonder.terraformer.setup;
 
-import com.gaussianwonder.terraformer.setup.block_items.BaseBlockItem;
+import com.gaussianwonder.terraformer.setup.blocks.items.BaseBlockItem;
 import com.gaussianwonder.terraformer.setup.blocks.MatterFuserBlock;
 import com.gaussianwonder.terraformer.setup.blocks.MatterRecyclerBlock;
 import com.gaussianwonder.terraformer.setup.blocks.MatterStorageBlock;

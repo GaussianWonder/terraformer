@@ -2,9 +2,9 @@ package com.gaussianwonder.terraformer.setup.blocks.tiles;
 
 import com.gaussianwonder.terraformer.capabilities.CapabilityMachine;
 import com.gaussianwonder.terraformer.capabilities.CapabilityMatter;
-import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.api.capabilities.handler.IMachineHandler;
 import com.gaussianwonder.terraformer.capabilities.handler.MachineHandler;
-import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
+import com.gaussianwonder.terraformer.api.capabilities.storage.IMatterStorage;
 import com.gaussianwonder.terraformer.capabilities.storage.MatterStorage;
 import com.gaussianwonder.terraformer.setup.ModTiles;
 import com.google.common.util.concurrent.AtomicDouble;

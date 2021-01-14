@@ -1,5 +1,6 @@
 package com.gaussianwonder.terraformer.capabilities.storage;
 
+import com.gaussianwonder.terraformer.api.capabilities.storage.IMatterStorage;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 

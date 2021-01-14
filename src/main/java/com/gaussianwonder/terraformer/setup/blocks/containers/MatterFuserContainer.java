@@ -2,8 +2,8 @@ package com.gaussianwonder.terraformer.setup.blocks.containers;
 
 import com.gaussianwonder.terraformer.capabilities.CapabilityMachine;
 import com.gaussianwonder.terraformer.capabilities.CapabilityMatter;
-import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
-import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
+import com.gaussianwonder.terraformer.api.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.api.capabilities.storage.IMatterStorage;
 import com.gaussianwonder.terraformer.networking.PacketHandler;
 import com.gaussianwonder.terraformer.networking.sync.MachineSyncMessage;
 import com.gaussianwonder.terraformer.networking.sync.MatterSyncMessage;

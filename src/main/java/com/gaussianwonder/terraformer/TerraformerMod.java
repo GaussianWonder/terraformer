@@ -1,9 +1,6 @@
 package com.gaussianwonder.terraformer;
 
-import com.gaussianwonder.terraformer.setup.ClientSetup;
-import com.gaussianwonder.terraformer.setup.Config;
-import com.gaussianwonder.terraformer.setup.ModItems;
-import com.gaussianwonder.terraformer.setup.RegistryHandler;
+import com.gaussianwonder.terraformer.setup.*;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -26,7 +23,7 @@ public class TerraformerMod
          */
         @Override
         public ItemStack createIcon() {
-            return new ItemStack(ModItems.TERRAFORM_ROD.get());
+            return new ItemStack(ModBlocks.MATTER_FUSER_ITEM.get());
         }
     };
 

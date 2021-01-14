@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.setup.data.tags;
+package com.gaussianwonder.terraformer.data.tags;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import com.gaussianwonder.terraformer.setup.ModItems;

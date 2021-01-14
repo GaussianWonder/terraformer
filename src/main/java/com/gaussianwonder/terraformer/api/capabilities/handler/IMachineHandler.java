@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.capabilities.handler;
+package com.gaussianwonder.terraformer.api.capabilities.handler;
 
 /**
  * This capability has everything to do with the configuring aspect of a machine:

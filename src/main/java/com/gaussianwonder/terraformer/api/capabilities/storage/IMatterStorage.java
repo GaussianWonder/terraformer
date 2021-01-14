@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.capabilities.storage;
+package com.gaussianwonder.terraformer.api.capabilities.storage;
 
 public interface IMatterStorage {
     class Matter {

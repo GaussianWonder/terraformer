@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.setup.data.client;
+package com.gaussianwonder.terraformer.data.client;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
 import com.gaussianwonder.terraformer.setup.ModBlocks;

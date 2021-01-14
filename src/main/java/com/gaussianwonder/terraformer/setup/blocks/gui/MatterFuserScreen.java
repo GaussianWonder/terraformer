@@ -1,7 +1,7 @@
 package com.gaussianwonder.terraformer.setup.blocks.gui;
 
 import com.gaussianwonder.terraformer.TerraformerMod;
-import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.api.capabilities.handler.IMachineHandler;
 import com.gaussianwonder.terraformer.setup.blocks.containers.MatterFuserContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;

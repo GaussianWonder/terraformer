@@ -1,7 +1,7 @@
 package com.gaussianwonder.terraformer.setup;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
-import com.gaussianwonder.terraformer.capabilities.storage.IMatterStorage;
+import com.gaussianwonder.terraformer.api.capabilities.storage.IMatterStorage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -25,7 +25,9 @@ public class Config {
         public static class Defaults extends IMatterStorage.Matter {
             Defaults(float solid, float soft, float granular) { super(solid, soft, granular); }
         }
-        public static class Invalid extends Defaults { Invalid(float solid, float soft, float granular) { super(solid, soft, granular); } }
+        public static class Invalid extends Defaults {
+            Invalid(float solid, float soft, float granular) { super(solid, soft, granular); }
+        }
 
         ForgeConfigSpec.DoubleValue SOLID;
         ForgeConfigSpec.DoubleValue SOFT;

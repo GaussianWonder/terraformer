@@ -1,6 +1,6 @@
 package com.gaussianwonder.terraformer.capabilities;
 
-import com.gaussianwonder.terraformer.capabilities.handler.IMachineHandler;
+import com.gaussianwonder.terraformer.api.capabilities.handler.IMachineHandler;
 import com.gaussianwonder.terraformer.capabilities.handler.MachineHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;

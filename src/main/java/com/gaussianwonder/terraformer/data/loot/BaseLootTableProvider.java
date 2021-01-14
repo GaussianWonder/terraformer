@@ -1,4 +1,4 @@
-package com.gaussianwonder.terraformer.setup.data.loot;
+package com.gaussianwonder.terraformer.data.loot;
 
 import com.gaussianwonder.terraformer.setup.blocks.BaseBlock;
 import com.google.gson.Gson;
